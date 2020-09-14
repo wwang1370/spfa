@@ -2,13 +2,11 @@ Package: spfa
 Type: Package
 Title: What the package does (short line)
 Version: 1.0
-Date: 2020-09-03
+Date: 2020-09-14
 Author: Who wrote it
 Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
-Imports: Rcpp (>= 0.12.18)
+Imports: Rcpp (>= 1.0.5)
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 7.0.2
-NeedsCompilation: yes
-Packaged: 2020-09-04 02:20:54 UTC; uni
+RoxygenNote: 7.1.1
