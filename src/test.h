@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 08/28/2020 */
+ * Last modified: 09/28/2020 */
 
 #ifndef TEST_H
 #define TEST_H
@@ -34,7 +34,6 @@ class Test
 
     // functions
     void mstep();  // M-step wrapper
-    void estep();  // E-step
 
   public:
     // constructors
@@ -48,6 +47,7 @@ class Test
 
     // function
     void start_val();  // obtain starting values
+    void estep();  // E-step
     void em();   // wrapper for EM algorithm
     List output();  // generate output
 };

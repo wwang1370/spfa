@@ -17,7 +17,6 @@ class Item
     // variables
     uword n_par, n_shortpar;  // length of par and shortpars
     vec dat;  // data vector
-    vec par, shortpar;  // item parameters
     const uword type;  // item type (0 = no constraint, 1 = monotone)
     double f;  // M-step minus log-likelihood
     vec grad;  // gradient of M-step minus log-likelihood
@@ -33,7 +32,6 @@ class Item
     mat& estep_wt;  // E-step posterior weights for samples
 
     // functions
-    void extend_par();  // shortpar -> par
     double basis_exp(vec& gr, double y, double x, bool deriv); // basis expansion
     double log_normalize(vec& gr, mat& he, double x, 
       bool deriv);   // evaluate log normalizing constant
@@ -56,6 +54,13 @@ class Item
     // copy (YL 08/31/2020)
     Item(const vec& shortpar_, double* dat_ptr, uword n_obsn, uword type_, 
       Bspline& bspl_, Quad& quad_, mat& estep_wt_, uword maxit_start);
+
+    // function
+    void extend_par();  // shortpar -> par
+    void reduce_par();  // par -> shortpar
+
+    // variables
+    vec shortpar, par;  // item parameters
 
   friend class Test;
 };

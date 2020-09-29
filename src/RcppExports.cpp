@@ -28,6 +28,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// deviance
+double deviance(const arma::mat& shortpar, arma::mat& dat, const arma::uvec& type, arma::uword n_basis, arma::uword n_quad);
+RcppExport SEXP _spfa_deviance(SEXP shortparSEXP, SEXP datSEXP, SEXP typeSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type shortpar(shortparSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type dat(datSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type type(typeSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_quad(n_quadSEXP);
+    rcpp_result_gen = Rcpp::wrap(deviance(shortpar, dat, type, n_basis, n_quad));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cubic_bspl
 arma::mat cubic_bspl(arma::vec x, arma::uword n_basis);
 RcppExport SEXP _spfa_cubic_bspl(SEXP xSEXP, SEXP n_basisSEXP) {
@@ -66,12 +81,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// reduce_par
+arma::vec reduce_par(arma::uword n_basis, arma::vec par);
+RcppExport SEXP _spfa_reduce_par(SEXP n_basisSEXP, SEXP parSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type par(parSEXP);
+    rcpp_result_gen = Rcpp::wrap(reduce_par(n_basis, par));
+    return rcpp_result_gen;
+END_RCPP
+}
+// extend_par
+arma::vec extend_par(arma::uword n_basis, arma::vec shortpar);
+RcppExport SEXP _spfa_extend_par(SEXP n_basisSEXP, SEXP shortparSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type shortpar(shortparSEXP);
+    rcpp_result_gen = Rcpp::wrap(extend_par(n_basis, shortpar));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_spfa_spfa_main", (DL_FUNC) &_spfa_spfa_main, 12},
+    {"_spfa_deviance", (DL_FUNC) &_spfa_deviance, 5},
     {"_spfa_cubic_bspl", (DL_FUNC) &_spfa_cubic_bspl, 2},
     {"_spfa_cubic_bspl0", (DL_FUNC) &_spfa_cubic_bspl0, 3},
     {"_spfa_gl_quad", (DL_FUNC) &_spfa_gl_quad, 3},
+    {"_spfa_reduce_par", (DL_FUNC) &_spfa_reduce_par, 2},
+    {"_spfa_extend_par", (DL_FUNC) &_spfa_extend_par, 2},
     {NULL, NULL, 0}
 };
 

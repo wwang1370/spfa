@@ -5,6 +5,10 @@ spfa_main <- function(shortpar, dat, type, n_basis, lmbd, n_quad, maxit_em, maxi
     .Call(`_spfa_spfa_main`, shortpar, dat, type, n_basis, lmbd, n_quad, maxit_em, maxit_mstep, maxit_start, tol_em, tol_mstep, tol_start)
 }
 
+deviance <- function(shortpar, dat, type, n_basis, n_quad) {
+    .Call(`_spfa_deviance`, shortpar, dat, type, n_basis, n_quad)
+}
+
 cubic_bspl <- function(x, n_basis) {
     .Call(`_spfa_cubic_bspl`, x, n_basis)
 }
@@ -15,5 +19,13 @@ cubic_bspl0 <- function(x, n_basis, x0) {
 
 gl_quad <- function(n_quad, lower, upper) {
     .Call(`_spfa_gl_quad`, n_quad, lower, upper)
+}
+
+reduce_par <- function(n_basis, par) {
+    .Call(`_spfa_reduce_par`, n_basis, par)
+}
+
+extend_par <- function(n_basis, shortpar) {
+    .Call(`_spfa_extend_par`, n_basis, shortpar)
 }
 

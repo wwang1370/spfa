@@ -19,6 +19,20 @@ void Item::extend_par()
     spmat.tail_cols(bspl.n_basis - 1) * bspl.null0.t();
 }
 
+/* reduce_par: par -> shortpar
+ *
+ * updates: shortpar (double, dim = n_shortpar) */
+
+void Item::reduce_par()
+{
+  mat spmat(shortpar.memptr(), bspl.n_basis - 1, bspl.n_basis, false),
+    pmat(par.memptr(), bspl.n_basis, bspl.n_basis + 1, false);
+  mat pinv_null0 = pinv( bspl.null0 );
+  spmat.col(0) = pinv_null0 * pmat.col(0);
+  spmat.tail_cols(bspl.n_basis - 1) = pinv_null0 * 
+    pmat.tail_cols(bspl.n_basis) * pinv_null0.t();
+}
+
 /* basis_exp: evaluate basis expansion and its derivatives
  *
  * returns: basis expansion value (double)
