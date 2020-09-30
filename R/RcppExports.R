@@ -5,8 +5,16 @@ spfa_main <- function(shortpar, dat, type, n_basis, lmbd, n_quad, maxit_em, maxi
     .Call(`_spfa_spfa_main`, shortpar, dat, type, n_basis, lmbd, n_quad, maxit_em, maxit_mstep, maxit_start, tol_em, tol_mstep, tol_start)
 }
 
-deviance <- function(shortpar, dat, type, n_basis, n_quad) {
-    .Call(`_spfa_deviance`, shortpar, dat, type, n_basis, n_quad)
+spfa_score <- function(shortpar, dat, n_basis, n_quad) {
+    .Call(`_spfa_spfa_score`, shortpar, dat, n_basis, n_quad)
+}
+
+marg_lik <- function(shortpar, dat, n_basis, n_quad) {
+    .Call(`_spfa_marg_lik`, shortpar, dat, n_basis, n_quad)
+}
+
+cond_dns <- function(shortpar, y, x, n_basis, n_quad) {
+    .Call(`_spfa_cond_dns`, shortpar, y, x, n_basis, n_quad)
 }
 
 cubic_bspl <- function(x, n_basis) {

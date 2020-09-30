@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 09/28/2020 */
+ * Last modified: 09/29/2020 */
 
 #include "test.h"
 
@@ -12,9 +12,9 @@
 
 // [[Rcpp::export]]
 Rcpp::List spfa_main(
-  const arma::mat& shortpar,  // starting values (double&, dim = n_shortpar x m)
-  arma::mat& dat,   // data matrix (int&, dim = n x m)
-  const arma::uvec& type,  //item type (int, length = m)  
+  const arma::mat& shortpar,  // starting values (double&, dim = n_shortpar x n_item)
+  arma::mat& dat,   // data matrix (int&, dim = n_obsn x n_item)
+  const arma::uvec& type,  //item type (int, length = n_item)  
   arma::uword n_basis,  // number of basis functions (int)
   double lmbd,  // penalty weights for y (double)
   arma::uword n_quad,  // number of quadrature points (int) */
@@ -38,27 +38,71 @@ Rcpp::List spfa_main(
   return ret;
 }
 
-/* deviance: compute (sample) deviance 
+/* spfa_score: scoring based on the semi-parametric model
  *
- * returns: deviance (double) */
+ * returns: latent variable scores (double, dim = n_obsn) */
 
 // [[Rcpp::export]]
-double deviance(
-  const arma::mat& shortpar,  // starting values (double&, dim = n_shortpar x m)
-  arma::mat& dat,   // data matrix (int&, dim = n x m)
-  const arma::uvec& type,  //item type (int, length = m)  
+arma::vec spfa_score(
+  const arma::mat& shortpar,  // starting values (double&, dim = n_shortpar x n_item)
+  arma::mat& dat,   // data matrix (int&, dim = n_obsn x n_item)
   arma::uword n_basis,  // number of basis functions (int)
   arma::uword n_quad  // number of quadrature points (int) */
   )
 {
   // initialization
+  uvec type(shortpar.n_cols); type.fill(0);
+  Test test(shortpar, dat, type, n_basis, 0.0, n_quad, 
+    0, 0, 0, 0.0, 0.0, 0.0);
+  test.start_val();  // starting values (only compute log_norm_const)
+  test.estep(); // run E-step to get weights
+  arma::vec x = test.score();  // compute scores
+  return x;
+}
+
+/* deviance: compute (sample) deviance 
+ *
+ * returns: deviance (double) */
+
+// [[Rcpp::export]]
+double marg_lik(
+  const arma::mat& shortpar,  // starting values (double&, dim = n_shortpar x m)
+  arma::mat& dat,   // data matrix (int&, dim = n x m)
+  arma::uword n_basis,  // number of basis functions (int)
+  arma::uword n_quad  // number of quadrature points (int) */
+  )
+{
+  // initialization
+  arma::uvec type(shortpar.n_cols); type.fill(0);
   Test test(shortpar, dat, type, n_basis, 0.0, n_quad, 
     0, 0, 0, 0.0, 0.0, 0.0);
   // starting values
   test.start_val();
   // run E-step once
   test.estep();
-  return - 2 * test.f;  // return deviance
+  return test.f;  // return marginal likelihood
+}
+
+
+/* cond_dns: evaluate conditional density
+ *
+ * returns: deviance (double) */
+
+// [[Rcpp::export]]
+arma::mat cond_dns(
+  arma::vec shortpar,  // parameter values (vec, dim = n_shortpar)
+  arma::vec y,  // y values (double, dim = y.n_elem)
+  arma::vec x,  // x values (double, dim = x.n_elem)
+  arma::uword n_basis,  // number of basis functions (int)
+  arma::uword n_quad  // number of quadrature points (int)
+  )
+{
+  Bspline bspl(n_basis, 4, 0.5, 0.0);
+  Quad quad(n_quad, 0.0, 1.0);
+  arma::mat estep_wt;
+  Item item(shortpar, y.memptr(), 0, 0, bspl, quad, estep_wt, 0);
+  arma::mat f = item.cond_dns(y, x);
+  return f;
 }
 
 /* cubic_bspl: cubic B-spline basis matrix

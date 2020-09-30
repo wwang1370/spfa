@@ -6,33 +6,6 @@
 
 #include "item.h"
 
-/* extend_par: shortpar -> par
- *
- * updates: par (double, dim = n_par) */
-
-void Item::extend_par()
-{
-  mat spmat(shortpar.memptr(), bspl.n_basis - 1, bspl.n_basis, false),
-    pmat(par.memptr(), bspl.n_basis, bspl.n_basis + 1, false);
-  pmat.col(0) = bspl.null0 * spmat.col(0);
-  pmat.tail_cols(bspl.n_basis) = bspl.null0 * 
-    spmat.tail_cols(bspl.n_basis - 1) * bspl.null0.t();
-}
-
-/* reduce_par: par -> shortpar
- *
- * updates: shortpar (double, dim = n_shortpar) */
-
-void Item::reduce_par()
-{
-  mat spmat(shortpar.memptr(), bspl.n_basis - 1, bspl.n_basis, false),
-    pmat(par.memptr(), bspl.n_basis, bspl.n_basis + 1, false);
-  mat pinv_null0 = pinv( bspl.null0 );
-  spmat.col(0) = pinv_null0 * pmat.col(0);
-  spmat.tail_cols(bspl.n_basis - 1) = pinv_null0 * 
-    pmat.tail_cols(bspl.n_basis) * pinv_null0.t();
-}
-
 /* basis_exp: evaluate basis expansion and its derivatives
  *
  * returns: basis expansion value (double)

@@ -28,18 +28,46 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// deviance
-double deviance(const arma::mat& shortpar, arma::mat& dat, const arma::uvec& type, arma::uword n_basis, arma::uword n_quad);
-RcppExport SEXP _spfa_deviance(SEXP shortparSEXP, SEXP datSEXP, SEXP typeSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP) {
+// spfa_score
+arma::vec spfa_score(const arma::mat& shortpar, arma::mat& dat, arma::uword n_basis, arma::uword n_quad);
+RcppExport SEXP _spfa_spfa_score(SEXP shortparSEXP, SEXP datSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type shortpar(shortparSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type dat(datSEXP);
-    Rcpp::traits::input_parameter< const arma::uvec& >::type type(typeSEXP);
     Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
     Rcpp::traits::input_parameter< arma::uword >::type n_quad(n_quadSEXP);
-    rcpp_result_gen = Rcpp::wrap(deviance(shortpar, dat, type, n_basis, n_quad));
+    rcpp_result_gen = Rcpp::wrap(spfa_score(shortpar, dat, n_basis, n_quad));
+    return rcpp_result_gen;
+END_RCPP
+}
+// marg_lik
+double marg_lik(const arma::mat& shortpar, arma::mat& dat, arma::uword n_basis, arma::uword n_quad);
+RcppExport SEXP _spfa_marg_lik(SEXP shortparSEXP, SEXP datSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type shortpar(shortparSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type dat(datSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_quad(n_quadSEXP);
+    rcpp_result_gen = Rcpp::wrap(marg_lik(shortpar, dat, n_basis, n_quad));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cond_dns
+arma::mat cond_dns(arma::vec shortpar, arma::vec y, arma::vec x, arma::uword n_basis, arma::uword n_quad);
+RcppExport SEXP _spfa_cond_dns(SEXP shortparSEXP, SEXP ySEXP, SEXP xSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type shortpar(shortparSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_quad(n_quadSEXP);
+    rcpp_result_gen = Rcpp::wrap(cond_dns(shortpar, y, x, n_basis, n_quad));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -108,7 +136,9 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_spfa_spfa_main", (DL_FUNC) &_spfa_spfa_main, 12},
-    {"_spfa_deviance", (DL_FUNC) &_spfa_deviance, 5},
+    {"_spfa_spfa_score", (DL_FUNC) &_spfa_spfa_score, 4},
+    {"_spfa_marg_lik", (DL_FUNC) &_spfa_marg_lik, 4},
+    {"_spfa_cond_dns", (DL_FUNC) &_spfa_cond_dns, 5},
     {"_spfa_cubic_bspl", (DL_FUNC) &_spfa_cubic_bspl, 2},
     {"_spfa_cubic_bspl0", (DL_FUNC) &_spfa_cubic_bspl0, 3},
     {"_spfa_gl_quad", (DL_FUNC) &_spfa_gl_quad, 3},

@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 09/28/2020 */
+ * Last modified: 09/29/2020 */
 
 #ifndef TEST_H
 #define TEST_H
@@ -49,6 +49,7 @@ class Test
     void start_val();  // obtain starting values
     void estep();  // E-step
     void em();   // wrapper for EM algorithm
+    vec score();  // compute scores
     List output();  // generate output
 };
 
