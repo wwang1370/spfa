@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 08/29/2020 */
+ * Last modified: 09/29/2020 */
 
 #include "test.h"
 
@@ -22,6 +22,7 @@ Test::Test(
   double tol_mstep_,  // convergence tolerance for M-step (double)
   double tol_start_  // convergence tolerance for starting values (double)
   ) : 
+  dat(dat_),
   n_obsn(dat_.n_rows), 
   n_item(dat_.n_cols),
   maxit_em(maxit_em_),

@@ -2,12 +2,13 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 09/29/2020 */
+ * Last modified: 09/30/2020 */
 
 #ifndef TEST_H
 #define TEST_H
 
 #include "item.h"
+#include "util.h"
 
 // constants
 static const uword MAX_BKTRK = 10;   // max number of backtracking iterations
@@ -20,6 +21,7 @@ class Test
 {
   private:
     // variables
+    mat& dat;  // reference to data
     uword n_obsn, n_item;  // number of obsns and items
     uword maxit_em, maxit_mstep, 
       maxit_start;  // maximum number of EM, M-step, and starting value iterations
@@ -51,6 +53,8 @@ class Test
     void em();   // wrapper for EM algorithm
     vec score();  // compute scores
     List output();  // generate output
+    vec marg_lik(mat y, uvec it);  // marginal likelihood
+    double risk(uvec it);  // L2 risk function
 };
 
 #endif

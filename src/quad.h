@@ -7,7 +7,7 @@
 #ifndef QUAD_H
 #define QUAD_H
 
-#include <RcppArmadillo.h>
+#include "RcppArmadillo.h"
 using namespace std;
 using namespace arma;
 using namespace Rcpp;

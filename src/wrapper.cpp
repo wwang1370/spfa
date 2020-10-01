@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 09/29/2020 */
+ * Last modified: 09/30/2020 */
 
 #include "test.h"
 
@@ -60,29 +60,56 @@ arma::vec spfa_score(
   return x;
 }
 
-/* deviance: compute (sample) deviance 
+/* xv_risk: compute cross-validation risk
  *
- * returns: deviance (double) */
+ * returns: risk function for each combination (vec) */
 
 // [[Rcpp::export]]
-double marg_lik(
-  const arma::mat& shortpar,  // starting values (double&, dim = n_shortpar x m)
-  arma::mat& dat,   // data matrix (int&, dim = n x m)
+arma::vec xv_risk(
+  const arma::mat& shortpar,  // starting values (double&, dim = n_shortpar x n_item)
+  arma::mat& dat,   // data matrix (int&, dim = n_obsn x n_item)
   arma::uword n_basis,  // number of basis functions (int)
-  arma::uword n_quad  // number of quadrature points (int) */
+  arma::uword n_quad,  // number of quadrature points (int) */
+  arma::uword order  // order of margins (int)
   )
 {
-  // initialization
-  arma::uvec type(shortpar.n_cols); type.fill(0);
+  // test initialization
+  arma::uword n_item = shortpar.n_cols;
+  uvec type(n_item); type.fill(0);
   Test test(shortpar, dat, type, n_basis, 0.0, n_quad, 
     0, 0, 0, 0.0, 0.0, 0.0);
-  // starting values
-  test.start_val();
-  // run E-step once
-  test.estep();
-  return test.f;  // return marginal likelihood
-}
+  test.start_val();  // starting values (only compute log_norm_const)
+  test.estep(); // run E-step to get weights
 
+  // loop over all combinations of items
+  arma::vec risk( choose(n_item, order) );
+  string bitmask(order, 1);  // order leading 1s
+  bitmask.resize(n_item, 0);  // n_item - order trailing 0s
+  arma::uword c = 0;
+  do 
+  {
+    uvec it(order);  // item combination
+    uword s = 0;
+    for (arma::uword i = 0; i < n_item; ++i)
+    {
+      if (bitmask[i]) 
+      {
+        it[s] = i;
+        s++;
+      }
+      if (s >= order) break;
+    }
+    // print info
+    Rcout << "Compute risk for items ";
+    for (arma::uword d = 0; d < order; ++d)
+      Rcout << it(d) << ' ';
+    Rcout << '\r';
+    risk(c) = test.risk(it);  // compute risk
+    c++;
+  } while ( prev_permutation( bitmask.begin(), bitmask.end() ) );
+  Rcout << endl;
+  return risk;
+}
 
 /* cond_dns: evaluate conditional density
  *
@@ -101,7 +128,7 @@ arma::mat cond_dns(
   Quad quad(n_quad, 0.0, 1.0);
   arma::mat estep_wt;
   Item item(shortpar, y.memptr(), 0, 0, bspl, quad, estep_wt, 0);
-  arma::mat f = item.cond_dns(y, x);
+  arma::mat f = arma::exp( item.cond_log_dns(y, x) );
   return f;
 }
 

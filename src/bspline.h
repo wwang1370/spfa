@@ -7,7 +7,7 @@
 #ifndef BSPLINE_H
 #define BSPLINE_H
 
-#include <RcppArmadillo.h>
+#include "RcppArmadillo.h"
 using namespace std;
 using namespace arma;
 using namespace Rcpp;

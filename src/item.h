@@ -58,7 +58,7 @@ class Item
     // function
     void extend_par();  // shortpar -> par
     void reduce_par();  // par -> shortpar
-    mat cond_dns(vec y, vec x);  // evaluate conditional density
+    mat cond_log_dns(vec y, vec x);  // evaluate conditional log density
 
     // variables
     vec shortpar, par;  // item parameters

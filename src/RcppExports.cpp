@@ -42,9 +42,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// marg_lik
-double marg_lik(const arma::mat& shortpar, arma::mat& dat, arma::uword n_basis, arma::uword n_quad);
-RcppExport SEXP _spfa_marg_lik(SEXP shortparSEXP, SEXP datSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP) {
+// xv_risk
+arma::vec xv_risk(const arma::mat& shortpar, arma::mat& dat, arma::uword n_basis, arma::uword n_quad, arma::uword order);
+RcppExport SEXP _spfa_xv_risk(SEXP shortparSEXP, SEXP datSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP, SEXP orderSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -52,7 +52,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat& >::type dat(datSEXP);
     Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
     Rcpp::traits::input_parameter< arma::uword >::type n_quad(n_quadSEXP);
-    rcpp_result_gen = Rcpp::wrap(marg_lik(shortpar, dat, n_basis, n_quad));
+    Rcpp::traits::input_parameter< arma::uword >::type order(orderSEXP);
+    rcpp_result_gen = Rcpp::wrap(xv_risk(shortpar, dat, n_basis, n_quad, order));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -137,7 +138,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_spfa_spfa_main", (DL_FUNC) &_spfa_spfa_main, 12},
     {"_spfa_spfa_score", (DL_FUNC) &_spfa_spfa_score, 4},
-    {"_spfa_marg_lik", (DL_FUNC) &_spfa_marg_lik, 4},
+    {"_spfa_xv_risk", (DL_FUNC) &_spfa_xv_risk, 5},
     {"_spfa_cond_dns", (DL_FUNC) &_spfa_cond_dns, 5},
     {"_spfa_cubic_bspl", (DL_FUNC) &_spfa_cubic_bspl, 2},
     {"_spfa_cubic_bspl0", (DL_FUNC) &_spfa_cubic_bspl0, 3},

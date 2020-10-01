@@ -2,13 +2,52 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 08/29/2020 */
+ * Last modified: 09/30/2020 */
 
 #include "test.h"
 
+/* risk: compute L2 risk function
+ *
+ * return: risk function (double) */
+
+double Test::risk(
+  uvec it  // item combination (int, dim = it.n_elem)
+  )
+{
+  // 1st term
+  double f = 0.0;
+  // loop over the grid of quadrature points
+  for (uword i = 0; i < pow(quad.n_quad, it.n_elem); ++i)
+  {
+    uvec qu = grid_loc(i, it.n_elem, quad.n_quad);  // grid location
+    double mlik = as_scalar( marg_lik(quad.node(qu).t(), it) );
+    f += mlik * mlik * arma::prod( quad.weight(qu) );
+  }
+  // 2nd term
+  vec mlik = marg_lik(dat.cols(it), it);
+  f -= 2.0 * arma::mean(mlik);
+  return f;
+}
+
+/* marg_lik: compute marginal likelihood
+ *
+ * return: marginal likelihood (double, dim = y.n_elem) */
+
+vec Test::marg_lik(
+  mat y,  // y values (double, n_cols = it.n_elem)
+  uvec it  // item combination (int, dim = it.n_elem)
+  )
+{
+  mat cdns = zeros(y.n_rows, quad.n_quad);
+  for (uword k = 0; k < it.n_elem; ++k)  // accumulate log conditional density
+    cdns += items[it(k)].cond_log_dns(y.col(k), quad.node);
+  vec f = arma::exp(cdns) * quad.weight;
+  return f;
+}
+
 /* score: compute EAP score
  *
- * update: x (double, dim = n_obsn) */
+ * return: x (double, dim = n_obsn) */
 
 vec Test::score()
 {
@@ -70,11 +109,11 @@ void Item::reduce_par()
     pmat.tail_cols(bspl.n_basis) * pinv_null0.t();
 }
 
-/* cond_dns: conditional density
+/* cond_log_dns: conditional log density
  *
- * return: conditional density values */
+ * return: log density values (double, dim = y.n_elem x x.n_elem) */
 
-mat Item::cond_dns(
+mat Item::cond_log_dns(
   vec y,  // y values (double, dim = y.n_elem)
   vec x  // x values (double, dim = x.n_elem)
   )
@@ -87,10 +126,7 @@ mat Item::cond_dns(
   {
     double log_nc = log_normalize(gr, he, x(j), false);
     for (uword i = 0; i < y.n_elem; ++i)
-    {
-      f(i, j) = std::exp(basis_exp(gr, y(i), x(j), false) - 
-        log_nc);
-    }
+      f(i, j) = basis_exp(gr, y(i), x(j), false) - log_nc;
   }
   return f;
 }
