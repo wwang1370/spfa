@@ -60,6 +60,30 @@ arma::vec spfa_score(
   return x;
 }
 
+/* marg_lik: compute marginal likelihood for each observation
+ *
+ * returns: marginal likelihood (vec, dim = n_obsn) */
+
+// [[Rcpp::export]]
+arma::vec marg_lik(
+  const arma::mat& shortpar,  // starting values (double&, dim = n_shortpar x n_item)
+  arma::mat& dat,   // data matrix (int&, dim = n_obsn x n_item)
+  arma::uword n_basis,  // number of basis functions (int)
+  arma::uword n_quad  // number of quadrature points (int) */
+  )
+{
+  // test initialization
+  arma::uword n_item = shortpar.n_cols;
+  uvec type(n_item); type.fill(0);
+  Test test(shortpar, dat, type, n_basis, 0.0, n_quad, 
+    0, 0, 0, 0.0, 0.0, 0.0);
+  test.start_val();  // starting values (only compute log_norm_const)
+  test.estep(); // run E-step to get weights
+  arma::uvec it = arma::regspace<uvec>(0, n_item - 1);
+  arma::vec f = test.marg_lik(dat, it);
+  return f;
+}
+
 /* xv_risk: compute cross-validation risk
  *
  * returns: risk function for each combination (vec) */

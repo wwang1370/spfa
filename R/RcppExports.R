@@ -9,6 +9,10 @@ spfa_score <- function(shortpar, dat, n_basis, n_quad) {
     .Call(`_spfa_spfa_score`, shortpar, dat, n_basis, n_quad)
 }
 
+marg_lik <- function(shortpar, dat, n_basis, n_quad) {
+    .Call(`_spfa_marg_lik`, shortpar, dat, n_basis, n_quad)
+}
+
 xv_risk <- function(shortpar, dat, n_basis, n_quad, order) {
     .Call(`_spfa_xv_risk`, shortpar, dat, n_basis, n_quad, order)
 }
