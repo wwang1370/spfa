@@ -5,6 +5,22 @@ spfa_main <- function(shortpar, dat, type, n_basis, lmbd, n_quad, maxit_em, maxi
     .Call(`_spfa_spfa_main`, shortpar, dat, type, n_basis, lmbd, n_quad, maxit_em, maxit_mstep, maxit_start, tol_em, tol_mstep, tol_start)
 }
 
+spfa_score <- function(shortpar, dat, n_basis, n_quad) {
+    .Call(`_spfa_spfa_score`, shortpar, dat, n_basis, n_quad)
+}
+
+marg_lik <- function(shortpar, dat, n_basis, n_quad) {
+    .Call(`_spfa_marg_lik`, shortpar, dat, n_basis, n_quad)
+}
+
+xv_risk <- function(shortpar, dat, n_basis, n_quad, order) {
+    .Call(`_spfa_xv_risk`, shortpar, dat, n_basis, n_quad, order)
+}
+
+cond_dns <- function(shortpar, y, x, n_basis, n_quad) {
+    .Call(`_spfa_cond_dns`, shortpar, y, x, n_basis, n_quad)
+}
+
 cubic_bspl <- function(x, n_basis) {
     .Call(`_spfa_cubic_bspl`, x, n_basis)
 }
@@ -15,5 +31,13 @@ cubic_bspl0 <- function(x, n_basis, x0) {
 
 gl_quad <- function(n_quad, lower, upper) {
     .Call(`_spfa_gl_quad`, n_quad, lower, upper)
+}
+
+reduce_par <- function(n_basis, par) {
+    .Call(`_spfa_reduce_par`, n_basis, par)
+}
+
+extend_par <- function(n_basis, shortpar) {
+    .Call(`_spfa_extend_par`, n_basis, shortpar)
 }
 

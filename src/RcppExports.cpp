@@ -28,6 +28,64 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// spfa_score
+arma::vec spfa_score(const arma::mat& shortpar, arma::mat& dat, arma::uword n_basis, arma::uword n_quad);
+RcppExport SEXP _spfa_spfa_score(SEXP shortparSEXP, SEXP datSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type shortpar(shortparSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type dat(datSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_quad(n_quadSEXP);
+    rcpp_result_gen = Rcpp::wrap(spfa_score(shortpar, dat, n_basis, n_quad));
+    return rcpp_result_gen;
+END_RCPP
+}
+// marg_lik
+arma::vec marg_lik(const arma::mat& shortpar, arma::mat& dat, arma::uword n_basis, arma::uword n_quad);
+RcppExport SEXP _spfa_marg_lik(SEXP shortparSEXP, SEXP datSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type shortpar(shortparSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type dat(datSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_quad(n_quadSEXP);
+    rcpp_result_gen = Rcpp::wrap(marg_lik(shortpar, dat, n_basis, n_quad));
+    return rcpp_result_gen;
+END_RCPP
+}
+// xv_risk
+arma::vec xv_risk(const arma::mat& shortpar, arma::mat& dat, arma::uword n_basis, arma::uword n_quad, arma::uword order);
+RcppExport SEXP _spfa_xv_risk(SEXP shortparSEXP, SEXP datSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP, SEXP orderSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type shortpar(shortparSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type dat(datSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_quad(n_quadSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type order(orderSEXP);
+    rcpp_result_gen = Rcpp::wrap(xv_risk(shortpar, dat, n_basis, n_quad, order));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cond_dns
+arma::mat cond_dns(arma::vec shortpar, arma::vec y, arma::vec x, arma::uword n_basis, arma::uword n_quad);
+RcppExport SEXP _spfa_cond_dns(SEXP shortparSEXP, SEXP ySEXP, SEXP xSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type shortpar(shortparSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_quad(n_quadSEXP);
+    rcpp_result_gen = Rcpp::wrap(cond_dns(shortpar, y, x, n_basis, n_quad));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cubic_bspl
 arma::mat cubic_bspl(arma::vec x, arma::uword n_basis);
 RcppExport SEXP _spfa_cubic_bspl(SEXP xSEXP, SEXP n_basisSEXP) {
@@ -66,12 +124,42 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// reduce_par
+arma::vec reduce_par(arma::uword n_basis, arma::vec par);
+RcppExport SEXP _spfa_reduce_par(SEXP n_basisSEXP, SEXP parSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type par(parSEXP);
+    rcpp_result_gen = Rcpp::wrap(reduce_par(n_basis, par));
+    return rcpp_result_gen;
+END_RCPP
+}
+// extend_par
+arma::vec extend_par(arma::uword n_basis, arma::vec shortpar);
+RcppExport SEXP _spfa_extend_par(SEXP n_basisSEXP, SEXP shortparSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type shortpar(shortparSEXP);
+    rcpp_result_gen = Rcpp::wrap(extend_par(n_basis, shortpar));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_spfa_spfa_main", (DL_FUNC) &_spfa_spfa_main, 12},
+    {"_spfa_spfa_score", (DL_FUNC) &_spfa_spfa_score, 4},
+    {"_spfa_marg_lik", (DL_FUNC) &_spfa_marg_lik, 4},
+    {"_spfa_xv_risk", (DL_FUNC) &_spfa_xv_risk, 5},
+    {"_spfa_cond_dns", (DL_FUNC) &_spfa_cond_dns, 5},
     {"_spfa_cubic_bspl", (DL_FUNC) &_spfa_cubic_bspl, 2},
     {"_spfa_cubic_bspl0", (DL_FUNC) &_spfa_cubic_bspl0, 3},
     {"_spfa_gl_quad", (DL_FUNC) &_spfa_gl_quad, 3},
+    {"_spfa_reduce_par", (DL_FUNC) &_spfa_reduce_par, 2},
+    {"_spfa_extend_par", (DL_FUNC) &_spfa_extend_par, 2},
     {NULL, NULL, 0}
 };
 

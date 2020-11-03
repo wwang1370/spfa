@@ -1,8 +1,8 @@
-/* Constructors and basic methods: Class _test_
+/* Constructors: Class _test_
  *
  * Author: Yang Liu
  *
- * Last modified: 08/29/2020 */
+ * Last modified: 09/29/2020 */
 
 #include "test.h"
 
@@ -22,6 +22,7 @@ Test::Test(
   double tol_mstep_,  // convergence tolerance for M-step (double)
   double tol_start_  // convergence tolerance for starting values (double)
   ) : 
+  dat(dat_),
   n_obsn(dat_.n_rows), 
   n_item(dat_.n_cols),
   maxit_em(maxit_em_),
@@ -43,33 +44,3 @@ Test::Test(
     items.push_back(item);
   }
 }
-
-/* output: output routine
- *
- * return: list of objects to forward to R
- * 
- * args: none */
-
-List Test::output()
-{  
-  // copy item parameters
-  mat par(items[0].n_par, n_item);
-  mat shortpar(items[0].n_shortpar, n_item);
-  for (uword j = 0; j < n_item; ++j)
-  {
-    items[j].par.set_size(items[j].n_par);
-    items[j].extend_par();  // shortpar -> par
-    par.col(j) = items[j].par;
-    shortpar.col(j) = items[j].shortpar;
-  }
-  // return list
-  List ret = List::create(
-    Named("par") = par,
-    Named("shortpar") = shortpar,
-    Named("f") = (this->f),
-    Named("niter") = iter,
-    Named("time") = time
-  );
-  return ret;
-}
-
