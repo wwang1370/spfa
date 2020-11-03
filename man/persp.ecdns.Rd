@@ -26,5 +26,5 @@
 perspective plot for estimated conditional density
 }
 \seealso{
-\code{\link{persp}},\code{\link{contour}}, and \code{\link{persp.ecdns}}
+\code{\link{persp}}, \code{\link{contour}}, and \code{\link{persp.ecdns}}
 }
