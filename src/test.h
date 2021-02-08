@@ -15,13 +15,15 @@ static const uword MAX_BKTRK = 10;   // max number of backtracking iterations
 static const double ARMIJO1 = 0.5;   // first constant in line search
 static const double ARMIJO2 = 0.0001;   // second constant in line search
 static const uword MAX_QP = 20;   // max number of QP iterations
+static const double TOL_NEWT = 1e-6;   // tolerance for performing Newton iteration
+static const double MIN_ML = 1e-256;   // minimum marginal likelihood value
 
 // class _Test_
 class Test
 {
   private:
     // variables
-    mat& dat;  // reference to data
+    mat dat;  // reference to data
     uword n_obsn, n_item;  // number of obsns and items
     uword maxit_em, maxit_mstep, 
       maxit_start;  // maximum number of EM, M-step, and starting value iterations
@@ -39,7 +41,7 @@ class Test
 
   public:
     // constructors
-    Test(const mat& start, mat& dat_, const uvec& type, 
+    Test(const mat& start, mat dat_, const uvec& type, 
       uword n_basis, double lmbd, uword n_quad, 
       uword maxit_em_, uword maxit_m_, uword maxit_start_, 
       double tol_em_, double tol_m_, double tol_start_);

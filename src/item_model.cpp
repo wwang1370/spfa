@@ -175,6 +175,11 @@ void Item::mloglik(
       estep_wt_p += estep_wt(p, i);
       // log-likelihood
       (this->f) -= estep_wt(p, i) * basis_exp(gr, dat(i), quad.node(p), deriv);
+      if ( gr.has_nan() )
+      {
+        Rcout << "gr has nan" << endl;
+        Rcout << shortpar.t() << endl;
+      }
       if (deriv) grad -= estep_wt(p, i) * gr;  // gradient
     }
     // normalizing constant (outside of person loop)

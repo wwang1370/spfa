@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 09/29/2020 */
+ * Last modified: 02/08/2021 */
 
 #include "test.h"
 
@@ -12,7 +12,15 @@
 
 void Item::search_dir0()
 {
-  dir = - solve(hess, grad);
+  // do QR decomposition (YL 02/08/21)
+  mat Q, R;
+  qr(Q, R, hess);
+  // solve for Newton direction if diagonals of R are sufficinetly large
+  if (arma::min( arma::abs( R.diag() ) ) > TOL_NEWT)
+    dir = - solve(hess, grad);
+  // otherwise fall back to gradien ascent
+  else
+    dir = - grad;
 }
 
 /* search_dir1: Solve the linearly constrained QP
@@ -159,9 +167,10 @@ void Test::estep()
       }
     }
     estep_wt.col(i) = arma::exp( estep_wt.col(i) ) % quad.weight;
-    // marginal likelihood^-1
-    double marg_lik_1 = 1.0 / accu( estep_wt.col(i) );
-    (this->f) -= log(marg_lik_1);
+    // marginal likelihood (add underflow protection, YL 02/08/21)
+    double marg_lik = std::max(accu( estep_wt.col(i) ), MIN_ML);
+    double marg_lik_1 = 1.0 / marg_lik;
+    (this->f) += log(marg_lik);
     // normalize
     estep_wt.col(i) *= marg_lik_1;
   }

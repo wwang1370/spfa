@@ -10,7 +10,7 @@
 
 Test::Test(
   const mat& start,  // starting value matrix (mat, dim = n_shortpar x n_item)
-  mat& dat_,  // data matrix (mat, dim = n_obsn x n_item)
+  mat dat_,  // data matrix (mat, dim = n_obsn x n_item)
   const uvec& type,   // item type (vec, dim = n_item)
   uword n_basis,  // number of basis functions (int)  
   double lmbd,  // penalty weight (double)
