@@ -17,10 +17,14 @@ void Item::search_dir0()
   qr(Q, R, hess);
   // solve for Newton direction if diagonals of R are sufficinetly large
   if (arma::min( arma::abs( R.diag() ) ) > TOL_NEWT)
-    dir = - solve(hess, grad);
+    dir = - solve(R, Q.t() * grad);
   // otherwise fall back to gradien ascent
   else
+  {
+    Rcout << "Warning: Hessian is ill-conditioned." << endl;
     dir = - grad;
+  }
+  //dir = - solve(hess, grad); // unstable
 }
 
 /* search_dir1: Solve the linearly constrained QP
