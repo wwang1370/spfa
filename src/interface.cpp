@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 09/30/2020 */
+ * Last modified: 02/11/2021 */
 
 #include "test.h"
 
@@ -45,14 +45,26 @@ vec Test::marg_lik(
   return f;
 }
 
-/* score: compute EAP score
+/* score: compute EAP score after transformation to normal scale
  *
- * return: x (double, dim = n_obsn) */
+ * return: EAP score and posterior variance (double, dim = n_obsn x 2) */
 
-vec Test::score()
-{
-  vec x = estep_wt.t() * quad.node;
-  return x;
+mat Test::score(
+  uword mode  // mode of scores (uint): 0 = uniform, 1 = normal
+  )
+{  
+  vec x(quad.n_quad);
+  // transform x by qnorm if mode = 1
+  if (mode == 1)
+  {
+    for (uword q = 0; q < quad.n_quad; ++q)
+      x(q) = R::qnorm(quad.node(q), 0.0, 1.0, 1, 0);
+  }
+  else if (mode == 0) x = quad.node;  // no need to transform for mode = 0
+  mat ret(n_obsn, 2);
+  ret.col(0) = estep_wt.t() * x;   // mean
+  ret.col(1) = estep_wt.t() * (x % x) - ret.col(0) % ret.col(0); // variance
+  return ret;
 }
 
 /* output: output routine

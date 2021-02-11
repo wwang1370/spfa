@@ -29,8 +29,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // spfa_score
-arma::vec spfa_score(const arma::mat& shortpar, arma::mat& dat, arma::uword n_basis, arma::uword n_quad);
-RcppExport SEXP _spfa_spfa_score(SEXP shortparSEXP, SEXP datSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP) {
+arma::mat spfa_score(const arma::mat& shortpar, arma::mat& dat, arma::uword n_basis, arma::uword n_quad, arma::uword mode);
+RcppExport SEXP _spfa_spfa_score(SEXP shortparSEXP, SEXP datSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP, SEXP modeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -38,7 +38,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat& >::type dat(datSEXP);
     Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
     Rcpp::traits::input_parameter< arma::uword >::type n_quad(n_quadSEXP);
-    rcpp_result_gen = Rcpp::wrap(spfa_score(shortpar, dat, n_basis, n_quad));
+    Rcpp::traits::input_parameter< arma::uword >::type mode(modeSEXP);
+    rcpp_result_gen = Rcpp::wrap(spfa_score(shortpar, dat, n_basis, n_quad, mode));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -151,7 +152,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_spfa_spfa_main", (DL_FUNC) &_spfa_spfa_main, 12},
-    {"_spfa_spfa_score", (DL_FUNC) &_spfa_spfa_score, 4},
+    {"_spfa_spfa_score", (DL_FUNC) &_spfa_spfa_score, 5},
     {"_spfa_marg_lik", (DL_FUNC) &_spfa_marg_lik, 4},
     {"_spfa_xv_risk", (DL_FUNC) &_spfa_xv_risk, 5},
     {"_spfa_cond_dns", (DL_FUNC) &_spfa_cond_dns, 5},

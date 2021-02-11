@@ -43,11 +43,12 @@ Rcpp::List spfa_main(
  * returns: latent variable scores (double, dim = n_obsn) */
 
 // [[Rcpp::export]]
-arma::vec spfa_score(
+arma::mat spfa_score(
   const arma::mat& shortpar,  // starting values (double&, dim = n_shortpar x n_item)
   arma::mat& dat,   // data matrix (int&, dim = n_obsn x n_item)
   arma::uword n_basis,  // number of basis functions (int)
-  arma::uword n_quad  // number of quadrature points (int) */
+  arma::uword n_quad,  // number of quadrature points (int) */
+  arma::uword mode  // mode (uint): 0 = uniform, 1 = normal
   )
 {
   // initialization
@@ -56,7 +57,7 @@ arma::vec spfa_score(
     0, 0, 0, 0.0, 0.0, 0.0);
   test.start_val();  // starting values (only compute log_norm_const)
   test.estep(); // run E-step to get weights
-  arma::vec x = test.score();  // compute scores
+  arma::mat x = test.score(mode);  // compute scores
   return x;
 }
 

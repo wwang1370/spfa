@@ -15,7 +15,7 @@ static const uword MAX_BKTRK = 10;   // max number of backtracking iterations
 static const double ARMIJO1 = 0.5;   // first constant in line search
 static const double ARMIJO2 = 0.0001;   // second constant in line search
 static const uword MAX_QP = 20;   // max number of QP iterations
-static const double TOL_NEWT = 1e-6;   // tolerance for performing Newton iteration
+static const double TOL_NEWT = 1e-8;   // tolerance for performing Newton iteration
 static const double MIN_ML = 1e-256;   // minimum marginal likelihood value
 
 // class _Test_
@@ -53,7 +53,7 @@ class Test
     void start_val();  // obtain starting values
     void estep();  // E-step
     void em();   // wrapper for EM algorithm
-    vec score();  // compute scores
+    mat score(uword mode);  // compute scores
     List output();  // generate output
     vec marg_lik(mat y, uvec it);  // marginal likelihood
     double risk(uvec it);  // L2 risk function

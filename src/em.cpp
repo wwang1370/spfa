@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 02/08/2021 */
+ * Last modified: 02/11/2021 */
 
 #include "test.h"
 
@@ -12,19 +12,17 @@
 
 void Item::search_dir0()
 {
-  // do QR decomposition (YL 02/08/21)
-  mat Q, R;
-  qr(Q, R, hess);
-  // solve for Newton direction if diagonals of R are sufficinetly large
-  if (arma::min( arma::abs( R.diag() ) ) > TOL_NEWT)
-    dir = - solve(R, Q.t() * grad);
+  // solve for Newton direction if reciprocal condition number is not too small
+  // (YL: 02/11/21)
+  double kappa = rcond(hess);
+  if (kappa > TOL_NEWT)
+    dir = - solve(hess, grad, solve_opts::fast);
   // otherwise fall back to gradien ascent
   else
   {
     Rcout << "Warning: Hessian is ill-conditioned." << endl;
     dir = - grad;
   }
-  //dir = - solve(hess, grad); // unstable
 }
 
 /* search_dir1: Solve the linearly constrained QP

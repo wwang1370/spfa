@@ -5,8 +5,8 @@ spfa_main <- function(shortpar, dat, type, n_basis, lmbd, n_quad, maxit_em, maxi
     .Call(`_spfa_spfa_main`, shortpar, dat, type, n_basis, lmbd, n_quad, maxit_em, maxit_mstep, maxit_start, tol_em, tol_mstep, tol_start)
 }
 
-spfa_score <- function(shortpar, dat, n_basis, n_quad) {
-    .Call(`_spfa_spfa_score`, shortpar, dat, n_basis, n_quad)
+spfa_score <- function(shortpar, dat, n_basis, n_quad, mode) {
+    .Call(`_spfa_spfa_score`, shortpar, dat, n_basis, n_quad, mode)
 }
 
 marg_lik <- function(shortpar, dat, n_basis, n_quad) {
