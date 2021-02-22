@@ -61,7 +61,7 @@ double Item::log_normalize(
   }
   for (uword q = 0; q < quad.n_quad; ++q)  // compute densities
   {
-    udns(q) = exp( basis_exp(gr_tmp, quad.node(q), x, deriv) ) * quad.weight(q);
+    udns(q) = trunc_exp( basis_exp(gr_tmp, quad.node(q), x, deriv) ) * quad.weight(q);
     if (deriv) 
     {
       vec gr1 = gr_tmp * udns(q);
@@ -69,10 +69,10 @@ double Item::log_normalize(
       he += gr1 * gr_tmp.t();
     }
   }
-  double log_norm_const = log( accu(udns) );  // log normalizing constant
+  double log_norm_const = trunc_log( accu(udns) );  // log normalizing constant
   if (deriv)  // update derivatives
   {
-    double norm_const_1 = exp(-log_norm_const);
+    double norm_const_1 = trunc_exp(-log_norm_const);
     gr *= norm_const_1;
     he *= norm_const_1; 
     he -= gr * gr.t();

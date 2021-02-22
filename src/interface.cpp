@@ -41,7 +41,7 @@ vec Test::marg_lik(
   mat cdns = zeros(y.n_rows, quad.n_quad);
   for (uword k = 0; k < it.n_elem; ++k)  // accumulate log conditional density
     cdns += items[it(k)].cond_log_dns(y.col(k), quad.node);
-  vec f = arma::exp(cdns) * quad.weight;
+  vec f = trunc_exp(cdns) * quad.weight;
   return f;
 }
 

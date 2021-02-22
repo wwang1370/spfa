@@ -153,7 +153,7 @@ arma::mat cond_dns(
   Quad quad(n_quad, 0.0, 1.0);
   arma::mat estep_wt;
   Item item(shortpar, y.memptr(), 0, 0, bspl, quad, estep_wt, 0);
-  arma::mat f = arma::exp( item.cond_log_dns(y, x) );
+  arma::mat f = trunc_exp( item.cond_log_dns(y, x) );
   return f;
 }
 

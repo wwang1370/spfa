@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 02/11/2021 */
+ * Last modified: 02/22/2021 */
 
 #include "test.h"
 
@@ -13,16 +13,13 @@
 void Item::search_dir0()
 {
   // solve for Newton direction if reciprocal condition number is not too small
-  // (YL: 02/11/21)
+  // (YL: 02/22/21)
   double kappa = rcond(hess);
   if (kappa > TOL_NEWT)
     dir = - solve(hess, grad, solve_opts::fast);
-  // otherwise fall back to gradien ascent
+  // otherwise fall back to gradient ascent
   else
-  {
-    Rcout << "Warning: Hessian is ill-conditioned." << endl;
     dir = - grad;
-  }
 }
 
 /* search_dir1: Solve the linearly constrained QP
@@ -168,11 +165,11 @@ void Test::estep()
           items[j].log_norm_const(p);
       }
     }
-    estep_wt.col(i) = arma::exp( estep_wt.col(i) ) % quad.weight;
-    // marginal likelihood (add underflow protection, YL 02/08/21)
-    double marg_lik = std::max(accu( estep_wt.col(i) ), MIN_ML);
+    estep_wt.col(i) = trunc_exp( estep_wt.col(i) ) % quad.weight;
+    // marginal likelihood
+    double marg_lik = accu( estep_wt.col(i) );
     double marg_lik_1 = 1.0 / marg_lik;
-    (this->f) += log(marg_lik);
+    (this->f) += trunc_log(marg_lik);
     // normalize
     estep_wt.col(i) *= marg_lik_1;
   }
