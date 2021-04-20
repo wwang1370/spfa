@@ -2,37 +2,54 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 08/26/2020 */
+ * Last modified: 04/18/2021 */
 
 #include "quad.h"
 
-/* constructor */
+/******************************************
+ *            Base Class Quad
+ *******************************************/
+
+/* basic constructor */
 
 Quad::Quad(
-  uword n_quad_,  // number of quadrature nodes (int)
-  double lower,  // lower limit (double)
-  double upper  // upper limit (double)
-  ) : 
-  n_quad(n_quad_)
+  uword n_quad1_,  // number of quadrature points per dimension (uword)
+  uword n_dim_  // dimension (uword);
+  ) : n_quad1(n_quad1_), n_dim(n_dim_)
 {
-  gauss_legendre(lower, upper);
+  n_quad = pow_uword(n_quad1, n_dim);
+  node.set_size(n_quad, n_dim);
+  node.set_size(n_quad, n_dim);
 }
 
-/* gauss_legendre: rescaled Gauss-Legendre quadrature
- *
- * returns: none
- *
- * updates:
- *   node: quadrature nodes (double, dim = 1)
- * weight: quadrature weights (double, dim = 1) */
+/* constructor with lower and upper bounds */
 
-void Quad::gauss_legendre(
-  double lower,  // lower limit (double, dim = 1)
-  double upper   // upper limit (double, dim = 1)
-)
+Quad::Quad(
+  uword n_quad1_,  // number of quadrature points per dimension (uword)
+  uword n_dim_,  // dimension (uword);
+  double lwr_,  // lower limit (double)
+  double upr_  // upper limit (double)
+  ) : Quad(n_quad1_, n_dim_)
 {
-  vec k = linspace(1, n_quad - 1, n_quad - 1);
-  mat jacobi = zeros(n_quad, n_quad);
+  lwr = lwr_;
+  upr = upr_;
+}
+
+/******************************************
+ *       Derived Class GaussLegendre
+ *******************************************/
+
+/* constructor */
+
+GaussLegendre::GaussLegendre(
+  uword n_quad1_,  // number of quadrature nodes per dimension (int)
+  uword n_dim_,  // dimension (uword);
+  double lwr_,  // lower limit (double)
+  double upr_  // upper limit (double)
+  ) : Quad(n_quad1_, n_dim_, lwr_, upr_)
+{
+  vec k = linspace(1, n_quad1 - 1, n_quad1 - 1);
+  mat jacobi = zeros(n_quad1, n_quad1);
   // beta diagonal from Golub & Welsch
   vec beta = k % arma::pow( (2 * k + 1) % (2 * k - 1) , -0.5 );
   // setting off-diagonal elements
@@ -42,8 +59,28 @@ void Quad::gauss_legendre(
   vec eigen_val;
   mat eigen_vec;
   eig_sym(eigen_val, eigen_vec, jacobi);
-  // determine nodeds and weights
-  weight = 2 * vectorise( eigen_vec.row(0) % eigen_vec.row(0) );
-  node = 0.5 * ( (upper - lower) * eigen_val + lower + upper );
-  weight *= 0.5 * (upper - lower);
+  // determine nodes and weights for one dimension
+  vec weight1 = 2 * vectorise( eigen_vec.row(0) % eigen_vec.row(0) );
+  vec node1 = 0.5 * ( (upr - lwr) * eigen_val + lwr + upr );
+  weight1 *= 0.5 * (upr - lwr);
+  // expand to grid
+  node = expand_grid(node1, n_dim);
+  weight = prod( expand_grid(weight1, n_dim), 1 );
 }
+
+/******************************************
+ *       Derived Class Rect
+ *******************************************/
+
+/* constructor */
+
+Rect::Rect(
+  uword n_quad1_  // number of quadrature nodes per dimension (int)
+  ) : Quad(n_quad1_)
+{
+  lwr = 0.0;  // lower bound = 0
+  upr = (double) (n_quad1 - 1);  // upper bound = n_quad1 - 1
+  weight = ones(n_quad1);
+  node = regspace(lwr, upr);
+}
+

@@ -1,8 +1,8 @@
-/* Headers: class _Test_
+/* Headers: class Test
  *
  * Author: Yang Liu
  *
- * Last modified: 09/30/2020 */
+ * Last modified: 04/17/2021 */
 
 #ifndef TEST_H
 #define TEST_H
@@ -15,47 +15,54 @@ static const uword MAX_BKTRK = 10;   // max number of backtracking iterations
 static const double ARMIJO1 = 0.5;   // first constant in line search
 static const double ARMIJO2 = 0.0001;   // second constant in line search
 static const uword MAX_QP = 20;   // max number of QP iterations
-static const double TOL_NEWT = 1e-8;   // tolerance for performing Newton iteration
 
 // class _Test_
 class Test
 {
   private:
     // variables
-    mat dat;  // reference to data
+    const mat &dat;  // reference to data
+    double na;  // missing code
     uword n_obsn, n_item;  // number of obsns and items
     uword maxit_em, maxit_mstep, 
       maxit_start;  // maximum number of EM, M-step, and starting value iterations
     double tol_em, tol_mstep,
       tol_start;  // tolerance for EM, M-step, and starting value iterations
-    Bspline bspl;  // B-spline bases
-    Quad quad;  // quadrature
+    Bspline basis_x;  // common basis for both x and y
+    GaussLegendre quad_x;  // quadrature for x
+    mat trans_x, pen_x;  // common transformation and penalty matrices
     vector<Item> items;  // vector of items
     mat estep_wt;  // E-step weights
     uword iter;  // iteration counter
     double time;  // time consumed 
+    int n_thrd;  // number of threads
 
-    // functions
-    void mstep();  // M-step wrapper
+    // methods
+    void init_estep_wt(const uvec& dim);  // initialize E-step weights
 
   public:
-    // constructors
-    Test(const mat& start, mat dat_, const uvec& type, 
-      uword n_basis, double lmbd, uword n_quad, 
-      uword maxit_em_, uword maxit_m_, uword maxit_start_, 
-      double tol_em_, double tol_m_, double tol_start_);
-
     // variables
     double f;  // penalized marginal log-likelihood
 
-    // function
-    void start_val();  // obtain starting values
+    // methods
     void estep();  // E-step
+    void mstep();  // M-step wrapper
     void em();   // wrapper for EM algorithm
     mat score(uword mode);  // compute scores
     List output();  // generate output
     vec marg_lik(mat y, uvec it);  // marginal likelihood
     double risk(uvec it);  // L2 risk function
+
+    // constructor and distructor
+    Test(const mat &dat_, double na_, const uvec &item_type, 
+      const Rcpp::List &start, const Rcpp::List &pos, 
+      uword n_basis, double lmbd, 
+      uword n_quad, const uvec &dim,
+      uword maxit_em_, uword maxit_m_, uword maxit_start_, 
+      double tol_em_, double tol_m_, double tol_start_,
+      int n_thrd);
+    ~Test() {};
+
 };
 
 #endif
