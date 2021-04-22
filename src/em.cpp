@@ -144,34 +144,52 @@ void Test::estep()
   vec gr;
   // person loop
   #ifdef _OPENMP
-    #pragma omp parallel for schedule(static) shared(estep_wt, gr) reduction(+:f) 
+    #pragma omp parallel
   #endif
-  for (uword i = 0; i < n_obsn; ++i)
-  {
-    // item loop
-    for (uword j = 0; j < n_item; ++j) 
+  { 
+    // local variables
+    double f_local = 0.0;
+
+    // parallel loop
+    #ifdef _OPENMP
+      #pragma omp for schedule(static) 
+    #endif
+    for (uword i = 0; i < n_obsn; ++i)
     {
-      // skip if missing
-      if ( is_equal( dat(i, j), items[j].get_na() ) ) continue;
-      // quadrature loop
-      for (uword p = 0; p < quad_x.n_quad; ++p)
+      // item loop
+      for (uword j = 0; j < n_item; ++j) 
       {
-        estep_wt(p, i) += 
-          items[j].basis_exp(gr, dat(i, j), quad_x.node( p, items[j].get_dim() ), false) - 
-          items[j].get_log_norm_const(p);
+        // skip if missing
+        if ( is_equal( dat(i, j), items[j].get_na() ) ) continue;
+        // quadrature loop
+        for (uword p = 0; p < quad_x.n_quad; ++p)
+        {
+          estep_wt(p, i) += 
+            items[j].basis_exp(gr, dat(i, j), quad_x.node( p, items[j].get_dim() ), false) - 
+            items[j].get_log_norm_const(p);
+        }
       }
+
+      // append quadrature weights
+      estep_wt.col(i) = trunc_exp( estep_wt.col(i) ) % quad_x.weight;
+
+      // marginal likelihood
+      double marg_lik = accu( estep_wt.col(i) );
+      double marg_lik_1 = 1.0 / marg_lik;
+      f_local += trunc_log(marg_lik);
+      // normalize
+      estep_wt.col(i) *= marg_lik_1;
     }
 
-    // append quadrature weights
-    estep_wt.col(i) = trunc_exp( estep_wt.col(i) ) % quad_x.weight;
-
-    // marginal likelihood
-    double marg_lik = accu( estep_wt.col(i) );
-    double marg_lik_1 = 1.0 / marg_lik;
-    f += trunc_log(marg_lik);
-    // normalize
-    estep_wt.col(i) *= marg_lik_1;
+    // accumulate local variables
+    #ifdef _OPENMP
+      #pragma omp critical
+    #endif
+    {
+      f += f_local;
+    }
   }
+
   // penalty
   for (uword j = 0; j < n_item; ++j) 
     f -= items[j].get_pen_val();
