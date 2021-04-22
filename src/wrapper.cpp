@@ -112,40 +112,42 @@ Rcpp::List spfa_main(
 ////  return f;
 ////}
 //
-/* cubic_bspl: cubic B-spline basis matrix
+/* bspl: evaluate b-spline basis on [lwr, upr] with equally spaced knots
  * 
  * returns: basis matrix (mat, dim = n x n_basis) */
 
 // [[Rcpp::export]]
-arma::mat cubic_bspl(
+arma::mat bspl(
   arma::vec x,   // data vector (int, dim = n)
-  arma::uword n_basis  // number of basis functions (int)
+  arma::uword n_basis,  // number of basis functions (int)
+  arma::uword order,  // order of basis
+  double lwr,  // lower bound (double)
+  double upr  // upper bound (double)
   )
 {
-  Bspline basis(n_basis, 4, 0.0, 1.0);
+  Bspline basis(n_basis, order, lwr, upr);
   arma::mat ret(x.n_elem, n_basis);
   for (arma::uword i = 0; i < x.n_elem; ++i)
     ret.row(i) = basis.eval( x(i) );
   return ret;
 }
-//
-///* cubic_bspl0: cubic B-spline basis matrix, with side condition
-// * 
-// * returns: basis matrix (mat, dim = n x (n_basis - 1) ) */
-//
-//// [[Rcpp::export]]
-//arma::mat cubic_bspl0(
-//  arma::vec x,   // data vector (int, dim = n)
-//  arma::uword n_basis,  // number of basis functions (int)
-//  double x0 // x value where side condition applies (double)
-//  )
-//{
-//  Bspline basis(n_basis, 4, x0, 1);
-//  arma::mat ret(x.n_elem, n_basis - 1);
-//  for (arma::uword i = 0; i < x.n_elem; ++i)
-//    ret.row(i) = basis.eval0( x(i) );
-//  return ret;
-//}
+
+/* cubic_bspl_nc: obtain normalizing constants for cubic_bspl
+ * 
+ * returns: basis matrix (mat, dim = n x n_basis) */
+
+// [[Rcpp::export]]
+arma::vec bspl_nc(
+  arma::uword n_basis,  // number of basis functions (int)
+  arma::uword order,  // order of basis
+  double lwr,  // lower bound (double)
+  double upr  // upper bound (double)
+)
+{
+  Bspline basis(n_basis, order, lwr, upr);
+  arma::vec ret = basis.get_norm_const();
+  return ret;
+}
 
 /* gl_quad: set up the rescaled gauss-Legendre quadrature
  * 

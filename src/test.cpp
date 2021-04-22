@@ -41,7 +41,7 @@ Test::Test(
   // basis and transformation matrices
   rowvec b0 = basis_x.eval(0.5);  // side value
   trans_x = null(b0).t();
-  trans_x = solve(trans_x * diff_mat(basis_x.n_basis, 1).t(), trans_x);
+  trans_x = - solve(trans_x * diff_mat(basis_x.n_basis, 1).t(), trans_x);
   inplace_trans(trans_x);  // transformation matrix
   mat d2tr = diff_mat(basis_x.n_basis, 2) * trans_x;
   pen_x = lmbd * d2tr.t() * d2tr;  // penalty matrix

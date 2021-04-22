@@ -48,6 +48,7 @@ class Bspline : public Basis
     // methods
     rowvec eval(double x);  // evaluate basis
     inline vec get_knots() {return knots;}  // retrieve knots
+    vec get_norm_const();  // compute all normalizing constants
 
     // constructor and destructor
     Bspline() {};  // default

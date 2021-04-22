@@ -6,6 +6,18 @@
 
 using namespace Rcpp;
 
+// diff_mat
+arma::mat diff_mat(arma::uword n, arma::uword order);
+RcppExport SEXP _spfa_diff_mat(SEXP nSEXP, SEXP orderSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uword >::type n(nSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type order(orderSEXP);
+    rcpp_result_gen = Rcpp::wrap(diff_mat(n, order));
+    return rcpp_result_gen;
+END_RCPP
+}
 // spfa_main
 Rcpp::List spfa_main(const arma::mat& dat, double na, const arma::uvec& item_type, const Rcpp::List& shortpar, const Rcpp::List& pos, arma::uword n_basis, double lmbd, arma::uword n_quad, const arma::uvec& dim, arma::uword maxit_em, arma::uword maxit_mstep, arma::uword maxit_start, double tol_em, double tol_mstep, double tol_start, int n_thrd);
 RcppExport SEXP _spfa_spfa_main(SEXP datSEXP, SEXP naSEXP, SEXP item_typeSEXP, SEXP shortparSEXP, SEXP posSEXP, SEXP n_basisSEXP, SEXP lmbdSEXP, SEXP n_quadSEXP, SEXP dimSEXP, SEXP maxit_emSEXP, SEXP maxit_mstepSEXP, SEXP maxit_startSEXP, SEXP tol_emSEXP, SEXP tol_mstepSEXP, SEXP tol_startSEXP, SEXP n_thrdSEXP) {
@@ -32,15 +44,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cubic_bspl
-arma::mat cubic_bspl(arma::vec x, arma::uword n_basis);
-RcppExport SEXP _spfa_cubic_bspl(SEXP xSEXP, SEXP n_basisSEXP) {
+// bspl
+arma::mat bspl(arma::vec x, arma::uword n_basis, arma::uword order, double lwr, double upr);
+RcppExport SEXP _spfa_bspl(SEXP xSEXP, SEXP n_basisSEXP, SEXP orderSEXP, SEXP lwrSEXP, SEXP uprSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
-    rcpp_result_gen = Rcpp::wrap(cubic_bspl(x, n_basis));
+    Rcpp::traits::input_parameter< arma::uword >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< double >::type lwr(lwrSEXP);
+    Rcpp::traits::input_parameter< double >::type upr(uprSEXP);
+    rcpp_result_gen = Rcpp::wrap(bspl(x, n_basis, order, lwr, upr));
+    return rcpp_result_gen;
+END_RCPP
+}
+// bspl_nc
+arma::vec bspl_nc(arma::uword n_basis, arma::uword order, double lwr, double upr);
+RcppExport SEXP _spfa_bspl_nc(SEXP n_basisSEXP, SEXP orderSEXP, SEXP lwrSEXP, SEXP uprSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< double >::type lwr(lwrSEXP);
+    Rcpp::traits::input_parameter< double >::type upr(uprSEXP);
+    rcpp_result_gen = Rcpp::wrap(bspl_nc(n_basis, order, lwr, upr));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -84,8 +113,10 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_spfa_diff_mat", (DL_FUNC) &_spfa_diff_mat, 2},
     {"_spfa_spfa_main", (DL_FUNC) &_spfa_spfa_main, 16},
-    {"_spfa_cubic_bspl", (DL_FUNC) &_spfa_cubic_bspl, 2},
+    {"_spfa_bspl", (DL_FUNC) &_spfa_bspl, 5},
+    {"_spfa_bspl_nc", (DL_FUNC) &_spfa_bspl_nc, 4},
     {"_spfa_gl_quad", (DL_FUNC) &_spfa_gl_quad, 4},
     {"_spfa_reduce_par", (DL_FUNC) &_spfa_reduce_par, 2},
     {"_spfa_extend_par", (DL_FUNC) &_spfa_extend_par, 2},

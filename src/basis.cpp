@@ -59,6 +59,7 @@ double Bspline::eval(
         b1 = eval(x, which, order - 1);
         t1 = ( x - knots(which) ) * b1 / denom;
       }
+      else t1 = 0.0;
       // 2nd term
       denom = knots(which + order) - knots(which + 1);
       if (std::abs(denom) >= DBL_EPS)  // avoid dividing by 0
@@ -66,6 +67,7 @@ double Bspline::eval(
         b2 = eval(x, which + 1, order - 1);
         t2 = ( knots(which + order) - x ) * b2 / denom;
       }
+      else t2 = 0.0;
       f = t1 + t2;
     }
   }
@@ -98,6 +100,18 @@ rowvec Bspline::eval(
   for (uword j = 0; j < n_basis; ++j)
     basis(j) = eval(x, j, order);
   return basis;
+}
+
+/* get_norm_const: compute all normalizing constants
+ *
+ * returns: normalizing constants (vec, dim = n_basis) */
+
+vec Bspline::get_norm_const()
+{
+  Bspline bs1(n_basis + 1, order + 1, lwr, upr);  // new basis
+  vec delta = trans( bs1.eval(lwr) - bs1.eval(upr) );
+  vec nc = cumsum(delta) * (upr - lwr) / ( (double) (n_basis - order + 1) );
+  return nc.head(n_basis);
 }
 
 /******************************************

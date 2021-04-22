@@ -79,12 +79,13 @@ mat expand_grid(
  *
  * returns: differencing matrix (double, dim = (n - order) x n) */
 
-mat diff_mat(
-  uword n,  // dimension (int)
-  uword order  // order of difference (int)
+// [[Rcpp::export]]
+arma::mat diff_mat(
+  arma::uword n,  // dimension (int)
+  arma::uword order  // order of difference (int)
   )
 {
-  mat diff(n - order, n); diff.zeros();
+  arma::mat diff(n - order, n); diff.zeros();
   if (order == 1)  // exit: order = 1
   {
     diff.diag(0).fill(1.0);
@@ -93,10 +94,10 @@ mat diff_mat(
   else  // otherwise, do recursion
   {
     // apply 1st-order diff matrix to columns of diff_mat(n, order - 1)
-    mat diff_ = diff_mat(n, order - 1);
-    for (uword j = 0; j < n; ++j)
+    arma::mat diff_ = diff_mat(n, order - 1);
+    for (arma::uword j = 0; j < n; ++j)
     {
-      uword i = j < order ? 0 : j - order;
+      arma::uword i = j < order ? 0 : j - order;
       while (i < j + 1 && i < diff.n_rows)
       {
         diff(i, j) = diff_(i, j) - diff_(i + 1, j);

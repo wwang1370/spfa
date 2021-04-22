@@ -37,7 +37,7 @@ Item::Item(
       break;
     case 1:  // dichotomous
       basis_y = new Iden(2);  // B-spline basis
-      quad_y = new Rect(2);  // GL quadrature
+      quad_y = new Rect(2);  // (unnormalized) rectangular quadrature
       trans_y = zeros(2, 1); // transformation matrix
       trans_y(1, 0) = 1.0;
       pen_y = zeros(1, 1);  // penalty matrix
