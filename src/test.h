@@ -7,14 +7,15 @@
 #ifndef TEST_H
 #define TEST_H
 
+#include "group.h"
 #include "item.h"
-#include "util.h"
 
 // constants
 static const uword MAX_BKTRK = 10;   // max number of backtracking iterations
 static const double ARMIJO1 = 0.5;   // first constant in line search
 static const double ARMIJO2 = 0.0001;   // second constant in line search
 static const uword MAX_QP = 20;   // max number of QP iterations
+static const double TOL_OPTIM = 1e-8;   // tolerance for optimization
 
 // class _Test_
 class Test

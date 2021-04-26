@@ -1,4 +1,4 @@
-/* Headers: class _item_
+/* Headers: class Item
  *
  * Author: Yang Liu
  *
@@ -10,7 +10,7 @@
 #include "basis.h"
 #include "quad.h"
 
-// class _Item_
+// class Item
 class Item
 {
   private:
@@ -40,6 +40,7 @@ class Item
     vec grad;  // gradient of M-step minus log-likelihood
     mat hess;  // Hessian of M-step minus log-likelihood
     vec dir;  // search direction
+    double cond1;   // first-order condition 
     double pen_val;  // penalty value
     vec log_norm_const;  // log normalizing constants
     uvec activ;  // active constraints
@@ -70,7 +71,7 @@ class Item
     void reduce_par();  // par -> shortpar
     double basis_exp(vec &gr, double y, double x, bool deriv); // basis expansion
     void mstep(uword maxit, double tol);  // M-step optimization
-    mat cond_log_dns(vec y, vec x);  // evaluate conditional log density
+    mat cond_log_dns(vec y, mat x);  // evaluate conditional log density
 
     // constructor and destructor
     Item(const vec &dat_, double na_, 
@@ -78,7 +79,7 @@ class Item
       const uword dim_,
       Basis &basis_x_, const mat &trans_x_, const mat &pen_x_,
       const Quad &quad_x, 
-      mat &estep_wt_, uword maxit_start);
+      mat &estep_wt_);
     Item(const Item &item);  // copy
     ~Item();
 

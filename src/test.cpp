@@ -56,7 +56,7 @@ Test::Test(
     items.emplace_back(dat.col(j), na,
       item_type(j), start_j, pos_j, dim(j),
       basis_x, trans_x, pen_x, quad_x, 
-      estep_wt, maxit_start);
+      estep_wt);
     items[j].mstep(maxit_start, tol_mstep);  // run M-step once to get starting values
   }
   Rcout << endl;
@@ -101,22 +101,23 @@ void Test::init_estep_wt(
   }
 }
 
-///* marg_lik: compute marginal likelihood
-// *
-// * return: marginal likelihood (double, dim = y.n_elem) */
-//
-//vec Test::marg_lik(
-//  mat y,  // y values (double, n_cols = it.n_elem)
-//  uvec it  // item combination (int, dim = it.n_elem)
-//  )
-//{
-//  mat cdns = zeros(y.n_rows, quad_x.n_quad);
-//  for (uword k = 0; k < it.n_elem; ++k)  // accumulate log conditional density
-//    cdns += items[it(k)].cond_log_dns( y.col(k), quad_x.node.col(0) );
-//  vec f = trunc_exp(cdns) * quad_x.weight;
-//  return f;
-//}
-//
+/* marg_lik: compute marginal likelihood
+ *
+ * return: marginal likelihood (double, dim = y.n_elem) */
+
+vec Test::marg_lik(
+  mat y,  // y values (double, n_cols = it.n_elem)
+  uvec it  // item combination (int, dim = it.n_elem)
+  )
+{
+  mat cdns = zeros(y.n_rows, quad_x.n_quad);
+  for (uword k = 0; k < it.n_elem; ++k)  // accumulate log conditional density
+    cdns += items[it(k)].cond_log_dns(y.col(k), quad_x.node);
+  vec f = trunc_exp(cdns) * quad_x.weight;
+  //cout << this->f << endl;
+  return f;
+}
+
 ///* score: compute EAP score after transformation to normal scale
 // *
 // * return: EAP score and posterior variance (double, dim = n_obsn x 2) */

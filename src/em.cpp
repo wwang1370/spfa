@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 04/15/2021 */
+ * Last modified: 04/27/2021 */
 
 #include "test.h"
 
@@ -13,6 +13,7 @@
 void Item::search_dir0()
 {
   dir = - solve(hess, grad);
+  cond1 = arma::norm(grad);
 }
 
 /* search_dir1: Solve the linearly constrained QP
@@ -27,7 +28,7 @@ void Item::search_dir1()
     // solve the working QP
     work_qp(p, mult);
     // if not moving
-    if ( all(arma::abs(p) < DBL_EPS) )
+    if ( p.is_zero(TOL_OPTIM) )
     {
       if ( all(mult >= 0.0) ) break; // terminate the program
       uvec indx_activ = find(activ == 1);
@@ -63,7 +64,7 @@ void Item::work_qp(
   vec& mult  // Lagrange multipler (vec, dim = n_activ)
   )
 {
-  p.set_size(n_shortpar); mult.set_size( size(activ) );
+  p.set_size(n_shortpar);
   uvec indx_activ = find(activ == 1), indx_inact = find(activ != 1);
   // sub-direction
   p.elem(indx_activ) = - dir(indx_activ) - shortpar.elem(indx_activ);
@@ -75,6 +76,10 @@ void Item::work_qp(
   mult = - hess.submat(indx_activ, indx_activ) * shortpar.elem(indx_activ) +
     hess.submat(indx_activ, indx_inact) * 
     ( dir.elem(indx_inact) + p.elem(indx_inact) ) + grad.elem(indx_activ);
+  // grad of Lagrangian
+  double norm1 = arma::norm(grad.elem(indx_activ) - mult),
+    norm2 = arma::norm( grad.elem(indx_inact) );
+  cond1 = std::sqrt(norm1 * norm1 + norm2 * norm2);
 }
 
 /* line_search: backtracking line search
@@ -115,14 +120,128 @@ void Item::mstep(
     (this->*search_dir_ptr)();  // search direction
     line_search();  // line search
     mloglik(true);  // update (this->f), grad, and hess
-    if (arma::norm(grad) < tol) break;  // check convergence
+    if (cond1 < tol) break;  // check convergence
+  }
+}
+
+/* search_dir: Solve the linearly constrained QP (Method for Group)
+ *
+ * update: search direction (vec, dim = n_par) */ 
+
+void Group::search_dir()
+{
+  dir.zeros();
+  vec p, mult;
+  for (uword r = 0; r < MAX_QP; ++r)
+  {
+    // solve the working QP
+    work_qp(p, mult);
+    // if not moving
+    if ( p.is_zero(TOL_OPTIM) )
+    {
+      if ( all(mult >= 0.0) ) break; // terminate the program
+      uvec indx_activ = find(activ == 1);
+      activ( indx_activ( mult.index_min() ) ) = 0;  // drop one constraint
+    }
+    else
+    {
+      uvec blk = find(activ == 0 && p < 0.0); // potential blocking constraints
+      double alpha = 1.0;
+      if (blk.n_elem > 0)
+      {
+        vec ratio = ( - par.elem(blk) - dir.elem(blk) ) / p.elem(blk);
+        uword indx_minr = ratio.index_min();
+        if (ratio(indx_minr) < 1.0)
+        {
+          alpha = ratio(indx_minr);
+          activ( blk(indx_minr) ) = 1;  // add one constraint
+        }
+      }
+      dir += alpha * p;
+    }
+  }
+}
+
+/* work_qp: working equality constrained QP (method for Group)
+ *
+ * update: 
+ *    p: search sub-direction (vec, dim = n_par)
+ * mult: Lagrange multipler (vec, dim = n_activ) */ 
+
+void Group::work_qp(
+  vec& p,  // sub-direction (vec, dim = n_par)
+  vec& mult  // Lagrange multipler (vec, dim = n_activ)
+  )
+{
+  uword n_activ = accu(activ);
+  mat A = constr_mat();
+  mat U, V; vec s;
+  svd( U, s, V, A.t() );
+  uword rk = accu(s >= TOL_OPTIM); // rank
+  mat Y = U.head_cols(rk), Z = U.tail_cols(n_par - rk);  // range and null spaces
+  U.set_size(0, 0); V.set_size(0, 0); s.set_size(0);
+  vec h = A * dir;
+  if (n_activ > 0)
+    h.tail(n_activ) += A.tail_rows(n_activ) * par;
+  vec g = hess * dir + grad;
+  mat AY = A * Y;
+  vec p_range = Y * solve(AY, -h);
+  mat ZtG = Z.t() * hess;
+  vec p_null = Z * solve(ZtG * Z, - ZtG * p_range - Z.t() * g);
+  p = p_range + p_null;
+  vec mult_full = solve( AY.t(), Y.t() * (g + hess * p) );
+  mult = mult_full.tail(n_activ);  // Lagrange multiplier
+  cond1 = arma::norm(grad - A.t() * mult_full);
+}
+
+/* line_search: backtracking line search
+ *
+ * update: 
+ * par: parameter vector (vec, dim = n_par) */ 
+
+void Group::line_search()
+{
+  double step_size = 1.0;
+  double f0 = (this->f), inprod = - dot(dir, grad);
+  vec par0 = par;
+  for (uword b = 0; b < MAX_BKTRK; ++b)
+  {
+    par = par0 + step_size * dir;
+    mloglik(false);
+    if (f0 - (this->f) > ARMIJO2 * step_size * inprod) break;
+    step_size *= ARMIJO1;
+  }
+}
+
+/* mstep: group-level M-step 
+ *
+ * update: 
+ *      par: parameter vector (vec, dim = n_par)
+ *  pen_val: roughness penalty (double) */ 
+
+void Group::mstep(
+  uword maxit,  // maximum number of iterations (int)
+  double tol  // convergence tolerance (double)
+  )
+{
+  // initialize
+  mloglik(true);
+  // (proximal) Newton iterations
+  for (uword r = 0 ; r < maxit; ++r)
+  {
+    search_dir();  // search direction
+    line_search();  // line search
+    mloglik(true);  // update (this->f), grad, and hess
+    cout << f << ' ' << cond1 << endl;
+    if (cond1 < tol) break;  // check convergence
   }
 }
 
 /* mstep: test-level M-step wrapper
  *
  * update: 
- * items[j].shortpar: parameter vector (vec, dim = n_shortpar) */ 
+ * items[j].shortpar: parameter vector (vec, dim = n_shortpar)
+ *         group.par: parameter vector (vec, dim = n_par) */ 
 
 void Test::mstep()
 {

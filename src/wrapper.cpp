@@ -44,6 +44,29 @@ Rcpp::List spfa_main(
   return ret;
 }
 
+// [[Rcpp::export]]
+Rcpp::List spfa_2dim(
+  const arma::vec wt,
+  arma::uword n_basis,  // number of basis functions (int)
+  double lmbd,  // penalty weights for y (double)
+  arma::uword n_quad,  // number of quadrature points (int) */
+  int n_thrd  // number of threads (int)
+  )
+{
+  Bspline basis_x(n_basis, 4, 0.0, 1.0);  // basis
+  mat d2 = diff_mat(basis_x.n_basis, 2);
+  mat pen_x = lmbd * d2.t() * d2;  // penalty matrix
+  GaussLegendre quad_x(n_quad, 2, 0.0, 1.0);  // quadrature
+  mat estep_wt(n_quad * n_quad, n_quad * n_quad);
+  estep_wt.col(0) = wt;  // estep weights
+  Group group(basis_x, pen_x, quad_x, estep_wt);
+  group.mstep(50, 1e-6);
+  List ret = List::create(
+    Named("par") = group.get_par()
+  );
+  return ret;
+}
+
 ///* spfa_score: scoring based on the semi-parametric model
 // *
 // * returns: latent variable scores (double, dim = n_obsn) */
@@ -67,29 +90,38 @@ Rcpp::List spfa_main(
 //  return x;
 //}
 //
-///* marg_lik: compute marginal likelihood for each observation
-// *
-// * returns: marginal likelihood (vec, dim = n_obsn) */
-//
-//// [[Rcpp::export]]
-//arma::vec marg_lik(
-//  const arma::mat& shortpar,  // starting values (double&, dim = n_shortpar x n_item)
-//  const arma::mat& dat,   // data matrix (int&, dim = n_obsn x n_item)
-//  arma::uword n_basis,  // number of basis functions (int)
-//  arma::uword n_quad  // number of quadrature points (int) */
-//  )
-//{
-//  // test initialization
-//  arma::uword n_item = shortpar.n_cols;
-//  uvec type(n_item); type.fill(0);
-//  Test test(shortpar, dat, type, n_basis, 0.0, n_quad, 
-//    0, 0, 0, 0.0, 0.0, 0.0);
-//  test.start_val();  // starting values (only compute log_norm_const)
-//  test.estep(); // run E-step to get weights
-//  arma::uvec it = arma::regspace<uvec>(0, n_item - 1);
-//  arma::vec f = test.marg_lik(dat, it);
-//  return f;
-//}
+/* marg_lik: compute marginal likelihood for each observation
+ *
+ * returns: marginal likelihood (vec, dim = n_obsn) */
+
+// [[Rcpp::export]]
+arma::vec marg_lik1(
+  const arma::mat &dat,   // data matrix (mat, dim = n_obsn x n_item)
+  double na,  // missing code (double) 
+  const arma::uvec &item_type,  // item type (uvec, dim = n_item)
+  const Rcpp::List &shortpar,  // starting values (mat, dim = max(n_shortpar) x n_item)
+  arma::uword n_basis,  // number of basis functions (int)
+  arma::uword n_quad,  // number of quadrature points (int)
+  arma::uword n_thrd  // number of threads (int)
+  )
+{
+  // test initialization
+  arma::uword n_item = item_type.n_elem;
+  Rcpp::List pos;
+  for (uword i = 0; i < item_type.n_elem; ++i)
+  {
+    vec shortpar_i = shortpar[i];
+    uvec tmp( size(shortpar_i) ); tmp.fill(0);
+    pos.push_back(tmp);
+  }
+  Test test(dat, na, item_type, shortpar, pos, 
+    n_basis, 0.0, n_quad, recode_unique(item_type), 0,
+    0, 0, 0.0, 0.0, 0.0, n_thrd);
+  test.estep(); // run E-step to get weights
+  arma::uvec it = arma::regspace<uvec>(0, n_item - 1);
+  arma::vec f = test.marg_lik(dat, it);
+  return f;
+}
 //
 /////* cond_dns: evaluate conditional density
 //// *
@@ -191,7 +223,7 @@ arma::vec reduce_par(
   GaussLegendre quad(2, 1, 0.0, 1.0);
   // initialize item
   Item item(dat, -9.0, 0, {0}, pos, 0,
-    bspl, tr, pen, quad, estep_wt, 0);
+    bspl, tr, pen, quad, estep_wt);
   // call public methods
   item.set_par(par);
   item.reduce_par();
@@ -215,7 +247,7 @@ arma::vec extend_par(
   GaussLegendre quad(2, 1, 0.0, 1.0);
   // initialize item
   Item item(dat, -9.0, 0, shortpar, pos, 0,
-    bspl, tr, pen, quad, estep_wt, 0);
+    bspl, tr, pen, quad, estep_wt);
   // call public methods
   item.extend_par();
   return item.get_par();
