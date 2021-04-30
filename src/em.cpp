@@ -28,7 +28,7 @@ void Item::search_dir1()
     // solve the working QP
     work_qp(p, mult);
     // if not moving
-    if ( p.is_zero(TOL_OPTIM) )
+    if ( p.is_zero(TOL_SQP) )
     {
       if ( all(mult >= 0.0) ) break; // terminate the program
       uvec indx_activ = find(activ == 1);
@@ -137,7 +137,7 @@ void Group::search_dir()
     // solve the working QP
     work_qp(p, mult);
     // if not moving
-    if ( p.is_zero(TOL_OPTIM) )
+    if ( p.is_zero(TOL_SQP) )
     {
       if ( all(mult >= 0.0) ) break; // terminate the program
       uvec indx_activ = find(activ == 1);
@@ -177,7 +177,7 @@ void Group::work_qp(
   mat A = constr_mat();
   mat U, V; vec s;
   svd( U, s, V, A.t() );
-  uword rk = accu(s >= TOL_OPTIM); // rank
+  uword rk = accu(s >= TOL_SV); // rank
   mat Y = U.head_cols(rk), Z = U.tail_cols(n_par - rk);  // range and null spaces
   U.set_size(0, 0); V.set_size(0, 0); s.set_size(0);
   vec h = A * dir;
@@ -232,7 +232,6 @@ void Group::mstep(
     search_dir();  // search direction
     line_search();  // line search
     mloglik(true);  // update (this->f), grad, and hess
-    cout << f << ' ' << cond1 << endl;
     if (cond1 < tol) break;  // check convergence
   }
 }
@@ -247,6 +246,8 @@ void Test::mstep()
 {
   for (uword j = 0; j < n_item; ++j)
     items[j].mstep(maxit_mstep, tol_mstep);
+  if (update_group)
+    group->mstep(maxit_mstep, tol_mstep);
 }
 
 /* estep: E-step
@@ -284,8 +285,19 @@ void Test::estep()
         for (uword p = 0; p < quad_x.n_quad; ++p)
         {
           estep_wt(p, i) += 
-            items[j].basis_exp(gr, dat(i, j), quad_x.node( p, items[j].get_dim() ), false) - 
+            items[j].basis_exp(gr, dat(i, j), 
+            quad_x.node( p, items[j].get_dim() ), false) - 
             items[j].get_log_norm_const(p);
+        }
+      }
+
+      // append density
+      if (update_group)
+      {
+        for (uword p = 0; p < quad_x.n_quad; ++p)
+        {
+          estep_wt(p, i) += 
+            trunc_log( group->basis_exp(gr, quad_x.node.row(p), false) );
         }
       }
 

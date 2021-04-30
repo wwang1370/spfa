@@ -19,7 +19,7 @@ class Group
     // variables to appear in the initialization list
     const uword n_dim = 2;  // # of dimensions (to be extended later)
     Bspline &basis_x;  // basis for x
-    const mat &pen_x;  // penalty matrix for x
+    const mat pen_x;  // penalty matrix for x
     const Quad &quad_x;  //  quadrature for x
     mat &estep_wt;  // E-step posterior weights for samples
 
@@ -36,7 +36,6 @@ class Group
     uvec activ;  // active constraints
 
     // methods
-    double basis_exp( vec& gr, rowvec x, bool deriv);  // basis expansion
     double penalize(vec &gr, mat &he, bool deriv);   // evaluate penalty
     mat constr_mat();  // evaluate constraint matrix
     void mloglik(bool deriv);  // compute M-step minus log-likelihood
@@ -46,6 +45,7 @@ class Group
 
   public:
     // methods
+    double basis_exp( vec& gr, rowvec x, bool deriv);  // basis expansion
     void mstep(uword maxit, double tol);  // M-step optimization
     inline vec get_par() {return par;}  // retrieve par
 

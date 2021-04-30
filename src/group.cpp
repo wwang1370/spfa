@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 04/25/2021 */
+ * Last modified: 04/30/2021 */
 
 #include "group.h"
 
@@ -19,9 +19,9 @@ Group::Group(
   // initialize
   n_par = pow(basis_x.n_basis, n_dim);  // total number of parameters
   par = ones(n_par);  // item parameters
-  //par.load("starting.dat"); 
-  //cout << par.t() << endl;
-  grad.set_size(n_par);
+
+  // derivatives
+  grad.set_size(n_par); 
   hess.set_size(n_par, n_par);
   dir.zeros(n_par);
   norm_const = basis_x.get_norm_const();
@@ -30,8 +30,6 @@ Group::Group(
   // active set
   activ.set_size(n_par);
   activ.fill(0);
-  //par.elem( find(par < 1e-6) ).fill(0.0);
-  //activ.elem( find(par < 1e-6) ).fill(1);
 }
 
 /* basis_exp: evaluate basis expansion and its derivatives

@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 04/19/2021 */
+ * Last modified: 04/29/2021 */
 
 #include "test.h"
 
@@ -15,9 +15,10 @@ Test::Test(
   const Rcpp::List &start,  // starting values (List)
   const Rcpp::List &pos,   // positive constraints (List)
   uword n_basis,  // number of basis functions (int)
-  double lmbd,  // penalty weight (double)
+  vec lmbd,  // penalty weights (vec, dim = n_item + 1)
   uword n_quad,  // number of quadrature points (int)
-  const uvec &dim,  // dimension indicator (uvec, dim = )
+  const uvec &dim,  // dimension indicator (uvec, dim = n_item)
+  bool update_group_,  // update group (bool)
   uword maxit_em_,  // maximum number of EM iterations (int)
   uword maxit_mstep_,  // maximum number of M-step iterations (int)
   uword maxit_start_,  // maximum number of starting value iterations (int)
@@ -26,11 +27,12 @@ Test::Test(
   double tol_start_,  // convergence tolerance for starting values (double)
   int n_thrd_  // number of threads
   ) : 
-  dat(dat_), na(na_), n_obsn(dat_.n_rows), n_item(dat_.n_cols),
+  dat(dat_), na(na_), n_obsn(dat_.n_rows), n_item(dat_.n_cols), n_dim(dim.max() + 1),
   maxit_em(maxit_em_), maxit_mstep(maxit_mstep_), maxit_start(maxit_start_),
   tol_em(tol_em_), tol_mstep(tol_mstep_), tol_start(tol_start_),
   basis_x(n_basis, 4, 0.0, 1.0), 
-  quad_x(n_quad, dim.max() + 1, 0.0, 1.0)
+  quad_x(n_quad, n_dim, 0.0, 1.0),
+  update_group(update_group_)
 {
   // parallel computing
   n_thrd = min( n_thrd_, omp_get_max_threads() );
@@ -38,28 +40,44 @@ Test::Test(
     omp_set_num_threads(n_thrd);
   #endif
 
-  // basis and transformation matrices
+  // initialize items
   rowvec b0 = basis_x.eval(0.5);  // side value
-  trans_x = null(b0).t();
+  mat trans_x = null(b0).t();
   trans_x = - solve(trans_x * diff_mat(basis_x.n_basis, 1).t(), trans_x);
   inplace_trans(trans_x);  // transformation matrix
   mat d2tr = diff_mat(basis_x.n_basis, 2) * trans_x;
-  pen_x = lmbd * d2tr.t() * d2tr;  // penalty matrix
-
-  // initialize items
+  mat pen_x = d2tr.t() * d2tr;  // penalty matrix for item
   init_estep_wt(dim);  // E-step weights
   for (uword j = 0; j < n_item; ++j)
   {
-    Rcout << "Starting values: Item " << j << '\r';  // print info
+    Rcout << "Starting values: Item " << j << "\u001b[0K"<< '\r';  // print info
     vec start_j = start[j];
     uvec pos_j = pos[j];
     items.emplace_back(dat.col(j), na,
       item_type(j), start_j, pos_j, dim(j),
-      basis_x, trans_x, pen_x, quad_x, 
+      basis_x, trans_x, lmbd(j) * pen_x, quad_x, 
       estep_wt);
     items[j].mstep(maxit_start, tol_mstep);  // run M-step once to get starting values
   }
+
+  // initialize groups
+  if (update_group)
+  {
+    d2tr = diff_mat(basis_x.n_basis, 2);
+    pen_x = d2tr.t() * d2tr;  // penalty matrix for item
+    Rcout << "Starting values: Group" << "\u001b[0K"<< '\r';  // print info
+    group = new Group(basis_x, lmbd(n_item) * pen_x, quad_x, estep_wt);
+      group->mstep(maxit_start, tol_mstep);  // run M-step once to get starting values
+  }
   Rcout << endl;
+}
+
+/* destructor */
+
+Test::~Test()
+{
+  if (update_group)
+    delete group;
 }
 
 /* init_estep_wt: initiate E-step weights
@@ -113,8 +131,14 @@ vec Test::marg_lik(
   mat cdns = zeros(y.n_rows, quad_x.n_quad);
   for (uword k = 0; k < it.n_elem; ++k)  // accumulate log conditional density
     cdns += items[it(k)].cond_log_dns(y.col(k), quad_x.node);
+  vec w = quad_x.weight;
+  if (update_group)
+  {
+    vec gr;
+    for (uword p = 0; p < quad_x.n_quad; ++p)
+      w(p) *= trunc_log( group->basis_exp(gr, quad_x.node.row(p), false) );
+  }
   vec f = trunc_exp(cdns) * quad_x.weight;
-  //cout << this->f << endl;
   return f;
 }
 
@@ -153,6 +177,11 @@ List Test::output()
     shortpar.push_back( arma2r( items[j].get_shortpar() ) );
     items[j].extend_par();  // shortpar -> par
     par.push_back( arma2r( items[j].get_par() ) );
+  }
+  if (update_group)
+  {
+    shortpar.push_back( arma2r( group->get_par() ) );
+    par.push_back( arma2r( group->get_par() ) );
   }
   // return list
   List ret = List::create(

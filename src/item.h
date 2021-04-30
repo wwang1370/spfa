@@ -21,8 +21,8 @@ class Item
     const uvec pos;  // positivity constraints
     const uword dim;  // dimension indicator
     Basis &basis_x;  // basis for x
-    const mat &trans_x;  // transformation matrix for x
-    const mat &pen_x;  // penalty matrix for x
+    const mat trans_x;  // transformation matrix for x
+    const mat pen_x;  // penalty matrix for x
     const Quad &quad_x;  //  quadrature for x
     mat &estep_wt;  // E-step posterior weights for samples
 

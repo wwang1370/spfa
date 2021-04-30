@@ -9,8 +9,8 @@ spfa_main <- function(dat, na, item_type, shortpar, pos, n_basis, lmbd, n_quad, 
     .Call(`_spfa_spfa_main`, dat, na, item_type, shortpar, pos, n_basis, lmbd, n_quad, dim, maxit_em, maxit_mstep, maxit_start, tol_em, tol_mstep, tol_start, n_thrd)
 }
 
-spfa_2dim <- function(wt, n_basis, lmbd, n_quad, n_thrd) {
-    .Call(`_spfa_spfa_2dim`, wt, n_basis, lmbd, n_quad, n_thrd)
+spfa_main2 <- function(dat, na, item_type, shortpar, pos, n_basis, lmbd, n_quad, dim, update_group, maxit_em, maxit_mstep, maxit_start, tol_em, tol_mstep, tol_start, n_thrd) {
+    .Call(`_spfa_spfa_main2`, dat, na, item_type, shortpar, pos, n_basis, lmbd, n_quad, dim, update_group, maxit_em, maxit_mstep, maxit_start, tol_em, tol_mstep, tol_start, n_thrd)
 }
 
 marg_lik1 <- function(dat, na, item_type, shortpar, n_basis, n_quad, n_thrd) {
