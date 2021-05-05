@@ -2,23 +2,26 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 04/30/2021 */
+ * Last modified: 05/04/2021 */
 
 #include "group.h"
 
 /* constructor */
 Group::Group(
+  const vec &par_,  // parameters (vec), dim = n_par)
   Bspline &basis_x_,  // basis for x (Bspline)
   const mat &pen_x_,  // penalty matrix, x (mat)
   const Quad &quad_x_,  // quadrature for x (Quad)
   mat &estep_wt_  // E-step posterior weights (mat&, dim = n_obsn x n_quad)
   ) : 
+  par(par_),
   basis_x(basis_x_), pen_x(pen_x_), 
   quad_x(quad_x_), estep_wt(estep_wt_)
 {
   // initialize
   n_par = pow(basis_x.n_basis, n_dim);  // total number of parameters
-  par = ones(n_par);  // item parameters
+  if (n_par != par.n_elem)
+    throw runtime_error("n_par is not the same as the length of par.");
 
   // derivatives
   grad.set_size(n_par); 

@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 04/13/2021 */
+ * Last modified: 05/04/2021 */
 
 #include "test.h"
 
@@ -107,12 +107,12 @@ Rcpp::List spfa_main2(
 //  return x;
 //}
 //
-/* marg_lik: compute marginal likelihood for each observation
+/* marg_loglik1: compute marginal log-lik for each observation, 1-dimensional
  *
  * returns: marginal likelihood (vec, dim = n_obsn) */
 
 // [[Rcpp::export]]
-arma::vec marg_lik1(
+double marg_loglik1(
   const arma::mat &dat,   // data matrix (mat, dim = n_obsn x n_item)
   double na,  // missing code (double) 
   const arma::uvec &item_type,  // item type (uvec, dim = n_item)
@@ -135,11 +135,41 @@ arma::vec marg_lik1(
     n_basis, zeros(n_item), n_quad, recode_unique(item_type), false, 0,
     0, 0, 0.0, 0.0, 0.0, n_thrd);
   test.estep(); // run E-step to get weights
-  arma::uvec it = arma::regspace<uvec>(0, n_item - 1);
-  arma::vec f = test.marg_lik(dat, it);
-  return f;
+  return test.f;
 }
-//
+
+/* marg_loglik2: compute marginal log-lik for each observation, 2-dimensional
+ *
+ * returns: marginal likelihood (vec, dim = n_obsn) */
+
+// [[Rcpp::export]]
+double marg_loglik2(
+  const arma::mat &dat,   // data matrix (mat, dim = n_obsn x n_item)
+  double na,  // missing code (double) 
+  const arma::uvec &item_type,  // item type (uvec, dim = n_item)
+  const Rcpp::List &shortpar, // parameters (list, size = n_item + 1)
+  const arma::uvec &dim,  // dimension indicator (uvec, dim = n_item)
+  arma::uword n_basis,  // number of basis functions (int)
+  arma::uword n_quad,  // number of quadrature points (int)
+  arma::uword n_thrd  // number of threads (int)
+  )
+{
+  // test initialization
+  arma::uword n_item = item_type.n_elem;
+  Rcpp::List pos;
+  for (uword i = 0; i < item_type.n_elem; ++i)
+  {
+    vec shortpar_i = shortpar[i];
+    uvec tmp( size(shortpar_i) ); tmp.fill(0);
+    pos.push_back(tmp);
+  }
+  Test test(dat, na, item_type, shortpar, pos, 
+    n_basis, zeros(n_item + 1), n_quad, recode_unique(dim), true, 0,
+    0, 0, 1.0, 1.0, 1.0, n_thrd);
+  test.estep(); // run E-step to get weights
+  return test.f;
+}
+
 /////* cond_dns: evaluate conditional density
 //// *
 //// * returns: deviance (double) */

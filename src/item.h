@@ -61,6 +61,7 @@ class Item
     inline double get_na() {return na;}  // retrieve na
     inline vec get_shortpar() {return shortpar;}  // retrieve shortpar
     inline vec get_par() {return par;}  // retrieve par
+    inline double get_f() {return f;}  // retrieve f
     inline uword get_dim() {return dim;}  // retrieve dim
     inline double get_log_norm_const(uword which) {
       return log_norm_const(which);}  // retrieve log-normalizing constant

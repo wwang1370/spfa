@@ -71,9 +71,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// marg_lik1
-arma::vec marg_lik1(const arma::mat& dat, double na, const arma::uvec& item_type, const Rcpp::List& shortpar, arma::uword n_basis, arma::uword n_quad, arma::uword n_thrd);
-RcppExport SEXP _spfa_marg_lik1(SEXP datSEXP, SEXP naSEXP, SEXP item_typeSEXP, SEXP shortparSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP, SEXP n_thrdSEXP) {
+// marg_loglik1
+double marg_loglik1(const arma::mat& dat, double na, const arma::uvec& item_type, const Rcpp::List& shortpar, arma::uword n_basis, arma::uword n_quad, arma::uword n_thrd);
+RcppExport SEXP _spfa_marg_loglik1(SEXP datSEXP, SEXP naSEXP, SEXP item_typeSEXP, SEXP shortparSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP, SEXP n_thrdSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -84,7 +84,25 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
     Rcpp::traits::input_parameter< arma::uword >::type n_quad(n_quadSEXP);
     Rcpp::traits::input_parameter< arma::uword >::type n_thrd(n_thrdSEXP);
-    rcpp_result_gen = Rcpp::wrap(marg_lik1(dat, na, item_type, shortpar, n_basis, n_quad, n_thrd));
+    rcpp_result_gen = Rcpp::wrap(marg_loglik1(dat, na, item_type, shortpar, n_basis, n_quad, n_thrd));
+    return rcpp_result_gen;
+END_RCPP
+}
+// marg_loglik2
+double marg_loglik2(const arma::mat& dat, double na, const arma::uvec& item_type, const Rcpp::List& shortpar, const arma::uvec& dim, arma::uword n_basis, arma::uword n_quad, arma::uword n_thrd);
+RcppExport SEXP _spfa_marg_loglik2(SEXP datSEXP, SEXP naSEXP, SEXP item_typeSEXP, SEXP shortparSEXP, SEXP dimSEXP, SEXP n_basisSEXP, SEXP n_quadSEXP, SEXP n_thrdSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type dat(datSEXP);
+    Rcpp::traits::input_parameter< double >::type na(naSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type item_type(item_typeSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type shortpar(shortparSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type dim(dimSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_basis(n_basisSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_quad(n_quadSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type n_thrd(n_thrdSEXP);
+    rcpp_result_gen = Rcpp::wrap(marg_loglik2(dat, na, item_type, shortpar, dim, n_basis, n_quad, n_thrd));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -160,7 +178,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_spfa_diff_mat", (DL_FUNC) &_spfa_diff_mat, 2},
     {"_spfa_spfa_main", (DL_FUNC) &_spfa_spfa_main, 16},
     {"_spfa_spfa_main2", (DL_FUNC) &_spfa_spfa_main2, 17},
-    {"_spfa_marg_lik1", (DL_FUNC) &_spfa_marg_lik1, 7},
+    {"_spfa_marg_loglik1", (DL_FUNC) &_spfa_marg_loglik1, 7},
+    {"_spfa_marg_loglik2", (DL_FUNC) &_spfa_marg_loglik2, 8},
     {"_spfa_bspl", (DL_FUNC) &_spfa_bspl, 5},
     {"_spfa_bspl_nc", (DL_FUNC) &_spfa_bspl_nc, 4},
     {"_spfa_gl_quad", (DL_FUNC) &_spfa_gl_quad, 4},

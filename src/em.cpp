@@ -262,6 +262,18 @@ void Test::estep()
   f = 0.0;
   estep_wt.zeros();
   vec gr;
+
+  // append density
+  vec wt = quad_x.weight;
+  if (update_group)
+  {
+    #ifdef _OPENMP
+      #pragma omp parallel for schedule(static)
+    #endif
+    for (uword p = 0; p < quad_x.n_quad; ++p)
+      wt(p) *= group->basis_exp(gr, quad_x.node.row(p), false);
+  }
+
   // person loop
   #ifdef _OPENMP
     #pragma omp parallel
@@ -291,18 +303,18 @@ void Test::estep()
         }
       }
 
-      // append density
-      if (update_group)
-      {
-        for (uword p = 0; p < quad_x.n_quad; ++p)
-        {
-          estep_wt(p, i) += 
-            trunc_log( group->basis_exp(gr, quad_x.node.row(p), false) );
-        }
-      }
+      //// append density
+      //if (update_group)
+      //{
+      //  for (uword p = 0; p < quad_x.n_quad; ++p)
+      //  {
+      //    estep_wt(p, i) += 
+      //      trunc_log( group->basis_exp(gr, quad_x.node.row(p), false) );
+      //  }
+      //}
 
       // append quadrature weights
-      estep_wt.col(i) = trunc_exp( estep_wt.col(i) ) % quad_x.weight;
+      estep_wt.col(i) = trunc_exp( estep_wt.col(i) ) % wt;
 
       // marginal likelihood
       double marg_lik = accu( estep_wt.col(i) );

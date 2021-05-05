@@ -17,6 +17,7 @@ class Group
 {
   private:
     // variables to appear in the initialization list
+    vec par;  // item parameters
     const uword n_dim = 2;  // # of dimensions (to be extended later)
     Bspline &basis_x;  // basis for x
     const mat pen_x;  // penalty matrix for x
@@ -25,7 +26,6 @@ class Group
 
     // intermediate variables and placeholders
     uword n_par;  // total number of parameters
-    vec par;  // item parameters
     vec norm_const;  // normalizing constant for basis
     double f;  // M-step minus log-likelihood
     vec grad;  // gradient of M-step minus log-likelihood
@@ -48,10 +48,11 @@ class Group
     double basis_exp( vec& gr, rowvec x, bool deriv);  // basis expansion
     void mstep(uword maxit, double tol);  // M-step optimization
     inline vec get_par() {return par;}  // retrieve par
+    inline double get_f() {return f;}  // retrieve f
 
     // constructor and destructor
-    Group(Bspline &basis_x_, const mat &pen_x_, const Quad &quad_x_, 
-      mat &estep_wt_);
+    Group(const vec &par_, Bspline &basis_x_, const mat &pen_x_, 
+      const Quad &quad_x_, mat &estep_wt_);
     ~Group() {};
 
 };

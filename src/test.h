@@ -55,7 +55,6 @@ class Test
     void em();   // wrapper for EM algorithm
     mat score(uword mode);  // compute scores
     List output();  // generate output
-    vec marg_lik(mat y, uvec it);  // marginal likelihood
     double risk(uvec it);  // L2 risk function
 
     // constructor and distructor

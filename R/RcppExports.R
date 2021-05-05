@@ -13,8 +13,12 @@ spfa_main2 <- function(dat, na, item_type, shortpar, pos, n_basis, lmbd, n_quad,
     .Call(`_spfa_spfa_main2`, dat, na, item_type, shortpar, pos, n_basis, lmbd, n_quad, dim, update_group, maxit_em, maxit_mstep, maxit_start, tol_em, tol_mstep, tol_start, n_thrd)
 }
 
-marg_lik1 <- function(dat, na, item_type, shortpar, n_basis, n_quad, n_thrd) {
-    .Call(`_spfa_marg_lik1`, dat, na, item_type, shortpar, n_basis, n_quad, n_thrd)
+marg_loglik1 <- function(dat, na, item_type, shortpar, n_basis, n_quad, n_thrd) {
+    .Call(`_spfa_marg_loglik1`, dat, na, item_type, shortpar, n_basis, n_quad, n_thrd)
+}
+
+marg_loglik2 <- function(dat, na, item_type, shortpar, dim, n_basis, n_quad, n_thrd) {
+    .Call(`_spfa_marg_loglik2`, dat, na, item_type, shortpar, dim, n_basis, n_quad, n_thrd)
 }
 
 bspl <- function(x, n_basis, order, lwr, upr) {

@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 04/29/2021 */
+ * Last modified: 05/04/2021 */
 
 #include "test.h"
 
@@ -66,8 +66,9 @@ Test::Test(
     d2tr = diff_mat(basis_x.n_basis, 2);
     pen_x = d2tr.t() * d2tr;  // penalty matrix for item
     Rcout << "Starting values: Group" << "\u001b[0K"<< '\r';  // print info
-    group = new Group(basis_x, lmbd(n_item) * pen_x, quad_x, estep_wt);
-      group->mstep(maxit_start, tol_mstep);  // run M-step once to get starting values
+    vec start_g = start[n_item];
+    group = new Group(start_g, basis_x, lmbd(n_item) * pen_x, quad_x, estep_wt);
+    group->mstep(maxit_start, tol_mstep);  // run M-step once to get starting values
   }
   Rcout << endl;
 }
@@ -117,29 +118,6 @@ void Test::init_estep_wt(
       estep_wt(arma::sum(delta, 1).index_min(), i) = 1.0;
     }
   }
-}
-
-/* marg_lik: compute marginal likelihood
- *
- * return: marginal likelihood (double, dim = y.n_elem) */
-
-vec Test::marg_lik(
-  mat y,  // y values (double, n_cols = it.n_elem)
-  uvec it  // item combination (int, dim = it.n_elem)
-  )
-{
-  mat cdns = zeros(y.n_rows, quad_x.n_quad);
-  for (uword k = 0; k < it.n_elem; ++k)  // accumulate log conditional density
-    cdns += items[it(k)].cond_log_dns(y.col(k), quad_x.node);
-  vec w = quad_x.weight;
-  if (update_group)
-  {
-    vec gr;
-    for (uword p = 0; p < quad_x.n_quad; ++p)
-      w(p) *= trunc_log( group->basis_exp(gr, quad_x.node.row(p), false) );
-  }
-  vec f = trunc_exp(cdns) * quad_x.weight;
-  return f;
 }
 
 ///* score: compute EAP score after transformation to normal scale
