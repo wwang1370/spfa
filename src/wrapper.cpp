@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 05/04/2021 */
+ * Last modified: 05/09/2021 */
 
 #include "test.h"
 
@@ -84,29 +84,6 @@ Rcpp::List spfa_main2(
   return ret;
 }
 
-///* spfa_score: scoring based on the semi-parametric model
-// *
-// * returns: latent variable scores (double, dim = n_obsn) */
-//
-//// [[Rcpp::export]]
-//arma::mat spfa_score(
-//  const arma::mat& shortpar,  // starting values (double&, dim = n_shortpar x n_item)
-//  const arma::mat& dat,   // data matrix (int&, dim = n_obsn x n_item)
-//  arma::uword n_basis,  // number of basis functions (int)
-//  arma::uword n_quad,  // number of quadrature points (int) */
-//  arma::uword mode  // mode (uint): 0 = uniform, 1 = normal
-//  )
-//{
-//  // initialization
-//  uvec type(shortpar.n_cols); type.fill(0);
-//  Test test(shortpar, dat, type, n_basis, 0.0, n_quad, 
-//    0, 0, 0, 0.0, 0.0, 0.0);
-//  test.start_val();  // starting values (only compute log_norm_const)
-//  test.estep(); // run E-step to get weights
-//  arma::mat x = test.score(mode);  // compute scores
-//  return x;
-//}
-//
 /* marg_loglik1: compute marginal log-lik for each observation, 1-dimensional
  *
  * returns: marginal likelihood (vec, dim = n_obsn) */
@@ -136,6 +113,39 @@ double marg_loglik1(
     0, 0, 0.0, 0.0, 0.0, n_thrd);
   test.estep(); // run E-step to get weights
   return test.f;
+}
+
+/* spfa_score1: EAP scoring based on the unidimensional semi-parametric model
+ *
+ * returns: latent variable scores (double, dim = n_obsn) */
+
+// [[Rcpp::export]]
+arma::mat spfa_score1(
+  const arma::mat &dat,   // data matrix (mat, dim = n_obsn x n_item)
+  double na,  // missing code (double) 
+  const arma::uvec &item_type,  // item type (uvec, dim = n_item)
+  const Rcpp::List &shortpar,  // starting values (mat, dim = max(n_shortpar) x n_item)
+  arma::uword n_basis,  // number of basis functions (int)
+  arma::uword n_quad,  // number of quadrature points (int)
+  arma::uword n_thrd,  // number of threads (int)
+  arma::uword mode  // mode (uint): 0 = uniform, 1 = normal
+  )
+{
+  // test initialization
+  arma::uword n_item = item_type.n_elem;
+  Rcpp::List pos;
+  for (uword i = 0; i < item_type.n_elem; ++i)
+  {
+    vec shortpar_i = shortpar[i];
+    uvec tmp( size(shortpar_i) ); tmp.fill(0);
+    pos.push_back(tmp);
+  }
+  Test test(dat, na, item_type, shortpar, pos, 
+    n_basis, zeros(n_item), n_quad, recode_unique(item_type), false, 0,
+    0, 0, 0.0, 0.0, 0.0, n_thrd);
+  test.estep(); // run E-step to get weights
+  arma::mat x = test.score1(mode);  // compute scores
+  return x;
 }
 
 /* marg_loglik2: compute marginal log-lik for each observation, 2-dimensional

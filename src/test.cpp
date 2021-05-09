@@ -120,28 +120,28 @@ void Test::init_estep_wt(
   }
 }
 
-///* score: compute EAP score after transformation to normal scale
-// *
-// * return: EAP score and posterior variance (double, dim = n_obsn x 2) */
-//
-//mat Test::score(
-//  uword mode  // mode of scores (uint): 0 = uniform, 1 = normal
-//  )
-//{  
-//  vec x(quad_x.n_quad);
-//  // transform x by qnorm if mode = 1
-//  if (mode == 1)
-//  {
-//    for (uword q = 0; q < quad_x.n_quad; ++q)
-//      x(q) = R::qnorm(quad_x.node(q, 0), 0.0, 1.0, 1, 0);
-//  }
-//  else if (mode == 0) x = quad_x.node.col(0);  // no need to transform for mode = 0
-//  mat ret(n_obsn, 2);
-//  ret.col(0) = estep_wt.t() * x;   // mean
-//  ret.col(1) = estep_wt.t() * (x % x) - ret.col(0) % ret.col(0); // variance
-//  return ret;
-//}
-//
+/* score1: compute EAP score, unidimensional only
+ *
+ * return: EAP score and posterior variance (double, dim = n_obsn x 2) */
+
+mat Test::score1(
+  uword mode  // mode of scores (uint): 0 = uniform, 1 = normal
+  )
+{  
+  vec x(quad_x.n_quad);
+  // transform x by qnorm if mode = 1
+  if (mode == 1)
+  {
+    for (uword q = 0; q < quad_x.n_quad; ++q)
+      x(q) = R::qnorm(quad_x.node(q, 0), 0.0, 1.0, 1, 0);
+  }
+  else if (mode == 0) x = quad_x.node.col(0);  // no need to transform for mode = 0
+  mat ret(n_obsn, 2);
+  ret.col(0) = estep_wt.t() * x;   // mean
+  ret.col(1) = estep_wt.t() * (x % x) - ret.col(0) % ret.col(0); // variance
+  return ret;
+}
+
 /* output: output routine
  *
  * return: list of objects to forward to R */
