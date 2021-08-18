@@ -146,13 +146,15 @@ cross.val <- function(
       fit <- do.call(spfa_main, args = ctrl)
       # risk computation with validation data
       nv <- sum( apply(tdata[fold[[k]], ], 1L, function(y) !all( is.na(y) ) ) )
-      risk[l, k] <- - marg_loglik1(tdata[fold[[k]], ], 
+      risk[l, k] <- - marg_loglik1(
+        tdata[fold[[k]], ], 
         na = ctrl$na,
         item_type = ctrl$item_type,
         shortpar = fit$shortpar,
         n_basis = ctrl$n_basis,
         n_quad = ctrl$n_quad,
-        n_thrd = ctrl$n_thrd) / nv / prod( apply(attr(tdata, "range"), 2L, diff) )
+        n_thrd = ctrl$n_thrd) / nv + 
+        sum( apply( attr(tdata, "range"), 2L, function(x) log( diff(x) ) ) )
     }
   }
 
