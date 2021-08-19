@@ -126,6 +126,8 @@ cross.val <- function(
   for ( k in seq_len(n.fold) )  # loop over folds
   {
     fit <- NULL
+    ctrl$dat <- tdata[-fold[[k]], ]  # calibration data
+    nv <- sum( apply(tdata[fold[[k]], ], 1L, function(y) !all( is.na(y) ) ) )
     for ( l in seq_along(lambda) )
     {
       cat("***** Fold ", k, ", ", "lambda = ", lambda[l], " *****\n", sep = '')
@@ -141,11 +143,9 @@ cross.val <- function(
         ctrl$shortpar <- start.val
         ctrl$maxit_start <- maxit.start
       }
-      ctrl$dat <- tdata[-fold[[k]], ]  # calibration data
       # fit
       fit <- do.call(spfa_main, args = ctrl)
       # risk computation with validation data
-      nv <- sum( apply(tdata[fold[[k]], ], 1L, function(y) !all( is.na(y) ) ) )
       risk[l, k] <- - marg_loglik1(
         tdata[fold[[k]], ], 
         na = ctrl$na,
@@ -154,7 +154,7 @@ cross.val <- function(
         n_basis = ctrl$n_basis,
         n_quad = ctrl$n_quad,
         n_thrd = ctrl$n_thrd) / nv + 
-        sum( apply( attr(tdata, "range"), 2L, function(x) log( diff(x) ) ) )
+        sum( log( apply(attr(tdata, "range"), 2L, diff) ) )
     }
   }
 
