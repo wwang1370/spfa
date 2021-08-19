@@ -66,14 +66,13 @@ minmax <- function(data, na = -999)
 #' @param seed Seed for random number generator. The default is 123.
 #' @param lambda Vector of penalty weights. The default is 1.
 #' @param control List of control variables. 
-#' @param all.risk Return all risk values? The default is \code{FALSE}.
 #' @return
 #' @export
 #' @examples
 
 cross.val <- function( 
   data, na = -999, n.fold = 10L, seed = 123L, lambda = 1, 
-  control = list(), all.risk = F 
+  control = list()
 )
 {
   # default control list
@@ -158,20 +157,6 @@ cross.val <- function(
     }
   }
 
-  # final fit using full data
-  avg.risk <- apply(risk, 1L, mean, na.rm = T)
-  indx.min <- which.min(avg.risk)
-  ctrl$shortpar <- start.val
-  ctrl$maxit_start <- maxit.start
-  ctrl$dat <- tdata
-  cat("***** Final fit *****\n", sep = '')
-  fit <- do.call(spfa_main, args = ctrl)
-
   # return
-  ret <- list(best.fit = fit, best.lambda = lambda[indx.min]) 
-  if (all.risk)
-    ret$risk <- risk
-  else
-    ret$risk <- avg.risk[indx.min]
-  ret
+  risk
 }
