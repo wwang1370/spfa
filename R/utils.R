@@ -63,7 +63,6 @@ minmax <- function(data, na = -999)
 #' @param data Data frame. Not necessarily on the [0, 1] scale.
 #' @param n.fold Number of folds The default is 10.
 #' @param na A numeric value which is to be interpreted as NA values. The default is -999.
-#' @param seed Seed for random number generator. The default is 123.
 #' @param lambda Vector of penalty weights. The default is 1.
 #' @param control List of control variables. 
 #' @return
@@ -71,12 +70,10 @@ minmax <- function(data, na = -999)
 #' @examples
 
 cross.val <- function( 
-  data, na = -999, n.fold = 10L, seed = 123L, lambda = 1, 
-  control = list()
+  data, na = -999, n.fold = 10L, lambda = 1, control = list()
 )
 {
   # default control list
-  set.seed(seed)
   n <- nrow(data)
   m <- ncol(data)
   maxit.start <- 20L
