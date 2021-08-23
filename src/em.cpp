@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 04/27/2021 */
+ * Last modified: 08/23/2021 */
 
 #include "test.h"
 
@@ -12,7 +12,8 @@
 
 void Item::search_dir0()
 {
-  dir = - solve(hess, grad);
+  // add small perturbation to increase stability (YL 08/23/21)
+  dir = - solve(hess + 1e-6 * arma::eye(n_shortpar, n_shortpar), grad);
   cond1 = arma::norm(grad);
 }
 
