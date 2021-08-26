@@ -13,13 +13,14 @@
 void Item::search_dir0()
 {
   // check condition number of hess (YL 08/23/21)
-  if (rcond(hess) > 1e-8)
-  {
-    cout << "WARNING: Ill-conditioned Hessian" << endl;
+  double kappa = cond(hess);
+  if (kappa <= 1e+8)
     dir = - solve(hess, grad, solve_opts::fast + solve_opts::likely_sympd);
-  }
   else
+  {
+    cout << "WARNING: Ill-conditioned Hessian; condition # = " << kappa << endl;
     dir = - grad;
+  }
   cond1 = arma::norm(grad);
 }
 
