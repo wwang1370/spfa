@@ -274,13 +274,13 @@ arma::vec reduce_par(
   Bspline bspl(n_basis, 4, 0.0, 1.0);
   arma::rowvec b0 = bspl.eval(0.5);
   mat tr = null(b0).t();
-  tr = solve(tr * diff_mat(n_basis, 1).t(), tr);
+  tr = - solve(tr * diff_mat(n_basis, 1).t(), tr);
   inplace_trans(tr);
   arma::mat pen(tr.n_cols, tr.n_cols);
   GaussLegendre quad(2, 1, 0.0, 1.0);
   // initialize item
-  Item item(dat, -9.0, 0, {0}, pos, 0,
-    bspl, tr, pen, quad, estep_wt);
+  Item item(dat, -9.0, 0, arma::zeros( n_basis * (n_basis - 1) ), 
+    pos, 0, bspl, tr, pen, quad, estep_wt);
   // call public methods
   item.set_par(par);
   item.reduce_par();
@@ -298,7 +298,7 @@ arma::vec extend_par(
   Bspline bspl(n_basis, 4, 0.0, 1.0);
   arma::rowvec b0 = bspl.eval(0.5);
   mat tr = null(b0).t();
-  tr = solve(tr * diff_mat(n_basis, 1).t(), tr);
+  tr = - solve(tr * diff_mat(n_basis, 1).t(), tr);
   inplace_trans(tr);
   arma::mat pen(tr.n_cols, tr.n_cols);
   GaussLegendre quad(2, 1, 0.0, 1.0);
