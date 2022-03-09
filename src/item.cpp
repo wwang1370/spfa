@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 04/17/2021 */
+ * Last modified: 03/08/2022 */
 
 #include "item.h"
 
@@ -34,13 +34,16 @@ Item::Item(
       trans_y = trans_x; // transformation matrix
       pen_y = pen_x;  // penalty matrix
       break;
-    case 1:  // dichotomous
-      basis_y = new Iden(2);  // B-spline basis
-      quad_y = new Rect(2);  // (unnormalized) rectangular quadrature
-      trans_y = zeros(2, 1); // transformation matrix
-      trans_y(1, 0) = 1.0;
-      pen_y = zeros(1, 1);  // penalty matrix
+    case 1:  // discrete
+    {
+      uword n_cat = ( (uword) dat.max() ) + 1;  // # of categories
+      basis_y = new Iden(n_cat);  // identity basis
+      quad_y = new Rect(n_cat);  // (unnormalized) rectangular quadrature
+      trans_y = zeros(n_cat, n_cat - 1); // transformation matrix
+      trans_y.diag(-1).ones();
+      pen_y = zeros(n_cat - 1, n_cat - 1);  // penalty matrix
       break;
+    }
     default:
       throw runtime_error("Item type not supported.");
       break;
