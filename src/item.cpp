@@ -36,7 +36,15 @@ Item::Item(
       break;
     case 1:  // discrete
     {
-      uword n_cat = ( (uword) dat.max() ) + 1;  // # of categories
+      // find the maximum data entry
+      double m = -DBL_MAX;
+      for (uword i = 0; i < dat.n_elem; ++i)
+      {
+        if ( is_equal(dat(i), na) ) continue;
+        if (dat(i) > m) m = dat(i);
+      }
+      uword n_cat = ( (uword) m ) + 1;  // # of categories
+      cout << n_cat << endl;
       basis_y = new Iden(n_cat);  // identity basis
       quad_y = new Rect(n_cat);  // (unnormalized) rectangular quadrature
       trans_y = zeros(n_cat, n_cat - 1); // transformation matrix
