@@ -44,7 +44,6 @@ Item::Item(
         if (dat(i) > m) m = dat(i);
       }
       uword n_cat = ( (uword) m ) + 1;  // # of categories
-      cout << n_cat << endl;
       basis_y = new Iden(n_cat);  // identity basis
       quad_y = new Rect(n_cat);  // (unnormalized) rectangular quadrature
       trans_y = zeros(n_cat, n_cat - 1); // transformation matrix
