@@ -17,7 +17,7 @@
 #' @param Bq  basis for quadrature points
 #' @param qwt quadrature weights
 #'
-#' @return loglikelihood 
+#' @return log-likelihood 
 #' @export
 #'
 #' @examples
@@ -29,6 +29,13 @@ loglik.out <- function(par, By, Bx, Bq, qwt)
         hq <- drop(Bq %*% par[1L:nby]) +
                 tcrossprod(Bq %*% matrix(par[-(1L:nby)], nby, ), Bx)
         sweep( hy, 2L, log( colSums(exp(hq) * qwt) ) )
+}
+lik.out.d <- function(par, Bx)  # discrete
+{
+        nbx <- ncol(Bx)
+        Par <- matrix(par, , nbx + 1L)
+        eta <- exp( Par[, 1L] + tcrossprod(Par[, -1L], Bx) )
+        t( apply( eta, 2L, function(x) x / sum(x) ) )
 }
 #' perspective plot for estimated conditional density
 #'
