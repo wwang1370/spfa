@@ -4,7 +4,7 @@
 # comments on the arguments 
 
 spfa <- function(
-  data,                             # data set
+  data = NULL,                      # data set
   dimension = rep( 0, ncol(data) ), # dimension indicators (integer)
   discrete = rep(F, ncol(data) ),   # discrete indicator (logical)
   control = list()                  # control list
