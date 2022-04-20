@@ -71,7 +71,7 @@ spfa <- function(
   for (j in seq_len(m))
   {
     if (disc[j])  # discrete items
-      nshortpar <- control$n_basis * ret$rng[2, j]
+      nshortpar <- ctrl$n_basis * ret$rng[2, j]
     else  # continuous items
       nshortpar <-  ctrl$n_basis * (ctrl$n_basis - 1)
     ctrl$shortpar[[j]] <- rep(0.1, nshortpar)
@@ -102,17 +102,17 @@ spfa <- function(
     tol_start = ctrl$tol_start,
     n_thrd = ctrl$n_thrd) )
    
-  # compute marginal log-likelihood
-  ret$loglik <- marg_loglik2(
-    dat = data,
-    na = -999,
-    update_group = ifelse(d == 1, F, T),
-    item_type = ctrl$item_type,
-    shortpar = ret$shortpar,
-    dim = ctrl$dim,
-    n_basis = ctrl$n_basis,
-    n_quad = ctrl$n_quad,
-    n_thrd = ctrl$n_thrd)
+  ## compute marginal log-likelihood
+  #ret$loglik <- marg_loglik2(
+  #  dat = data,
+  #  na = -999,
+  #  update_group = ifelse(d == 1, F, T),
+  #  item_type = ctrl$item_type,
+  #  shortpar = ret$shortpar,
+  #  dim = ctrl$dim,
+  #  n_basis = ctrl$n_basis,
+  #  n_quad = ctrl$n_quad,
+  #  n_thrd = ctrl$n_thrd)
 
   # return
   ret
