@@ -4,14 +4,12 @@
 \alias{minmax}
 \title{min max method}
 \usage{
-minmax(data, logT = T, na.strings = -999)
+minmax(data, na = -999)
 }
 \arguments{
-\item{data}{Response time data or log response time data on a scale different from 0 to 1.}
+\item{data}{Data frame. Not necessarily on the [0, 1] scale.}
 
-\item{logT}{a logical value indicating whether response time data is on a log scale. The default is \code{TRUE}}
-
-\item{na.strings}{a character vector of strings which are to be interpreted as NA values. Has to be outside the range of 0 to 1 to be recognized as a missing value to be used in the \code{spfa} package. The default is -999.}
+\item{na}{A numeric value which is to be interpreted as NA values. The default is -999.}
 }
 \value{
 
