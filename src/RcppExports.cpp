@@ -6,11 +6,6 @@
 
 using namespace Rcpp;
 
-#ifdef RCPP_USE_GLOBAL_ROSTREAM
-Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
-Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
-#endif
-
 // diff_mat
 arma::mat diff_mat(arma::uword n, arma::uword order);
 RcppExport SEXP _spfa_diff_mat(SEXP nSEXP, SEXP orderSEXP) {

@@ -18,7 +18,7 @@ loglik.out(par, By, Bx, Bq, qwt)
 \item{qwt}{quadrature weights}
 }
 \value{
-loglikelihood
+log-likelihood
 }
 \description{
 Get the loglikelihood from the fitted model to prepare for the density plots
