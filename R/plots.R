@@ -18,7 +18,7 @@
 #' @param qwt quadrature weights
 #'
 #' @return log-likelihood 
-#' @export
+
 #'
 #' @examples
 loglik.out <- function(par, By, Bx, Bq, qwt)
@@ -46,8 +46,8 @@ lik.out.d <- function(par, Bx)  # discrete
 #' @param nbx number of bases for x
 #' @param ... additional parameters for perspective plots
 #'
-#' @return
-#' @export
+
+
 #' @seealso \code{\link{persp}}, \code{\link{contour}}, and \code{\link{persp.ecdns}}
 #' @examples
 persp.ecdns <- function(par, x = seq(0,1,0.02), y = seq(0,1,0.02), nby = 11, nbx = 11, ...)
@@ -72,8 +72,7 @@ persp.ecdns <- function(par, x = seq(0,1,0.02), y = seq(0,1,0.02), nby = 11, nbx
 #' @param nbx number of bases for x
 #' @param ... additional parameters for perspective plots
 #'
-#' @return
-#' @export
+
 #' @seealso \code{\link{persp}},\code{\link{contour}}, and \code{\link{persp.ecdns}}
 #' @examples
 contour.ecdns <- function(par, x = seq(0,1,0.02), y = seq(0,1,0.02), nby = 11, nbx = 11, ...)
