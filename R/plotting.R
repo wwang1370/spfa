@@ -1,19 +1,33 @@
-# plotting functions
-#
-# -Weimeng: Please write the help document; after that you can delete my
-# comments on the arguments 
-
+#' Item level perspective plots or contour plots for spfa models
+#' 
+#' For continuous response data use \code{plotitem.cont} whereas discrete response data use \code{plotitem.disc}
+#' 
+#' @param param parameter vector estimated from \code{\link{spfa}} model
+#' @param nquad an integer value of number of quadrature points. Default is 21
+#' @param npoints an integer value of number of x and y levels in the plot
+#' @param xlim the x limits of the plot. Two numerical values indicating the lower and upper limits
+#' @param ylim the y limits of the plot. Two numerical values indicating the lower and upper limits of the density. Note y is rescaled to a uniform [0,1] distribution.
+#' @param normal a logical value \code{T} or \code{F} indicating which density is used to rescale y.
+#' @param FUN a user supplied function to rescale.
+#' @param plot a logical value \code{T} or \code{F} indicating whether the plot is visualized. 
+#' @param type the type of plot to be visualized. The default is the contour plot \code{\link{contour}}. It can also be changed to "\code{persp}" indicating perspective plots.
+#' @param ... additional arguments passed to \code{\link{contour}} and \code{\link{persp}}
+#' @seealso \code{\link{contour}} and \code{\link{persp}}
+#' @return
+#' @export
+#'
+#' @examples
 plotitem.cont <- function(
-  param,                    # parameter vector
-  nquad = 21,               # number of quadrature points (integer)
-  npoints = 101,            # number of x and y levels (integer)
-  xlim = c(-2.5, 2.5),      # limit of x (numeric, length = 2)
-  ylim = c(0, 1),           # limit of y (numeric, length = 2), density will be rescaled
-  normal = T,               # normal scale? (logical)
-  FUN = NULL,               # function to integrate ( function(y) )
-  plot = T,                 # create plot? (logical)
-  type = "contour",         # type of visualization
-  ...                       # additional arguments passed to contour/persp
+  param,                    
+  nquad = 21,               
+  npoints = 101,            
+  xlim = c(-2.5, 2.5),      
+  ylim = c(0, 1),           
+  normal = T,               
+  FUN = NULL,              
+  plot = T,                
+  type = "contour",         
+  ...                      
 )                     
 {
   # check validity of arguments
@@ -85,6 +99,12 @@ plotitem.cont <- function(
   else
     stop("type is not yet supported")
 }
+
+#' # Item level plot for discrete response data:
+#' @rdname plotitem.cont
+#' @param ncat an integer value indicating the number of categories for the discrete item.
+#' @param col color of the line. 
+#' @param lty line type
 
 plotitem.disc <- function(
   param,                    # parameter vector
