@@ -162,3 +162,59 @@ plotitem.disc <- function(
   for ( k in seq_len(ncat) )
     lines(ret$x, ret$prob[, k], col = col[k], lty = lty[k], ...)
 }
+
+plotgroup <- function(
+  param,                    # parameter vector
+  nquad = 21,               # number of quadrature points (integer)
+  npoints = 101,            # number of x and y levels (integer)
+  lim = c(-2.5, 2.5),       # limit of x and y (numeric, length = 2)
+  normal = T,               # normal scale? (logical)
+  plot = T,                 # create plot? (logical)
+  type = "contour",         # type of visualization
+  ...                       # additional arguments passed to contour/persp
+)                     
+{
+  # check validity of arguments
+  q <- length(param)
+  nbasis <- as.integer( sqrt(q) )
+  if (nbasis * nbasis != q)
+    stop("length(param) is cannot be factorized into nbasis * nbasis")
+  if (length(lim) != 2)
+    stop("length(lim) must be 2")
+  npoints <- max(4, npoints)  # npoints >= 4
+  nquad <- max(2, nquad)  # nquad >= 2
+
+  # computation
+  ret <- list(xy = NULL)
+  if (normal)  # normal grid
+  {
+    ret$xy <- seq(lim[1], lim[2], , npoints)
+    B <- bspl(pnorm(ret$xy), nbasis, 4, 0, 1)
+  }
+  else  # uniform grid
+  {
+    lim <- c(0, 1)
+    ret$xy <- seq(0, 1, , npoints)
+    B <- bspl(ret$xy, nbasis, 4, 0, 1)
+  }
+  parmat <- matrix(param, nbasis, nbasis)
+  ret$dns <- B %*% parmat %*% t(B)
+  if (normal)
+    ret$dns <- ret$dns * tcrossprod( dnorm(ret$xy) )
+  if (!plot) return(ret)
+
+  # plotting
+  if (type == "contour")
+  {
+    contour(ret$xy, ret$xy, ret$dns, xlim = lim, ylim = lim,
+      xlab = expression( italic(x)[1] ), ylab = expression( italic(x)[2] ), ...)
+  }
+  else if (type == "persp")
+  {
+    persp(ret$xy, ret$xy, ret$dns, xlim = lim, ylim = lim, 
+      xlab = "x1", ylab = "x2", 
+      zlab = "Density", ...)
+  }
+  else
+    stop("type is not yet supported")
+}
