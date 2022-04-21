@@ -53,7 +53,7 @@ class Test
     void estep();  // E-step
     void mstep();  // M-step wrapper
     void em();   // wrapper for EM algorithm
-    mat score1(uword mode);  // compute scores
+    mat score(uword mode);  // compute scores
     List output();  // generate output
     double risk(uvec it);  // L2 risk function
 

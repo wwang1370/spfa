@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 05/04/2021 */
+ * Last modified: 04/21/2022 */
 
 #include "test.h"
 
@@ -57,7 +57,7 @@ Test::Test(
       item_type(j), start_j, pos_j, dim(j),
       basis_x, trans_x, lmbd(j) * pen_x, quad_x, 
       estep_wt);
-    items[j].mstep(maxit_start, tol_mstep);  // run M-step once to get starting values
+    items[j].mstep(maxit_start, tol_start);  // run M-step once to get starting values
   }
 
   // initialize groups
@@ -68,7 +68,7 @@ Test::Test(
     Rcout << "Starting values: Group" << "\u001b[0K"<< '\r';  // print info
     vec start_g = start[n_item];
     group = new Group(start_g, basis_x, lmbd(n_item) * pen_x, quad_x, estep_wt);
-    group->mstep(maxit_start, tol_mstep);  // run M-step once to get starting values
+    group->mstep(maxit_start, tol_start);  // run M-step once to get starting values
   }
   Rcout << endl;
 }
@@ -118,6 +118,48 @@ void Test::init_estep_wt(
       estep_wt(arma::sum(delta, 1).index_min(), i) = 1.0;
     }
   }
+}
+
+/* score: compute EAP score
+ *
+ * return: EAP score and posterior variance 
+ *   (double, dim = n_obsn x (n_dim * (n_dim + 1) / 2) ) */
+
+mat Test::score(
+  uword mode  // mode of scores (uint): 0 = uniform, 1 = normal
+  )
+{  
+  mat x = quad_x.node;  // copy quadrature node
+  // transform x by qnorm if mode = 1
+  if (mode == 1)
+  {
+    for (uword q = 0; q < quad_x.n_quad; ++q)
+    {
+      for (uword d = 0; d < n_dim; ++d)
+        x(q, d) = R::qnorm(x(q, d), 0.0, 1.0, 1, 0);
+    }
+  }
+  uword n_cov = n_dim * (n_dim + 1) / 2;
+  mat ret(n_obsn, n_dim + n_cov);
+  ret.head_cols(n_dim) = estep_wt.t() * x;   // means
+  // covariances
+  #ifdef _OPENMP
+    #pragma omp for schedule(static) 
+  #endif
+  for (uword i = 0; i < n_obsn; ++i)
+  {
+    uword c = n_dim;
+    for (uword p = 0; p < n_dim; ++p)
+    {
+      for (uword q = 0; q <= p; ++q)
+      {
+        ret(i, c) = dot( estep_wt.col(i), x.col(p) % x.col(q) ) - 
+          ret(i, p) * ret(i, q);
+        c++;
+      }
+    }
+  }
+  return ret;
 }
 
 /* score1: compute EAP score, unidimensional only
