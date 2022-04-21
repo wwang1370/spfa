@@ -1,6 +1,6 @@
 #' Item level perspective plots or contour plots for spfa models
 #' 
-#' For continuous response data use \code{plotitem.cont} whereas discrete response data use \code{plotitem.disc}
+#' For continuous response data use \code{plotitem.cont} whereas discrete response data use \code{plotitem.disc}. For joint continuous and discrete data, use \code{plotgroup}.
 #' 
 #' @param param parameter vector estimated from \code{\link{spfa}} model
 #' @param nquad an integer value of number of quadrature points. Default is 21
@@ -162,16 +162,18 @@ plotitem.disc <- function(
   for ( k in seq_len(ncat) )
     lines(ret$x, ret$prob[, k], col = col[k], lty = lty[k], ...)
 }
+#' # Item level plot for continuous and discrete response data
+#' @rdname plotitem.cont
 
 plotgroup <- function(
-  param,                    # parameter vector
-  nquad = 21,               # number of quadrature points (integer)
-  npoints = 101,            # number of x and y levels (integer)
-  lim = c(-2.5, 2.5),       # limit of x and y (numeric, length = 2)
-  normal = T,               # normal scale? (logical)
-  plot = T,                 # create plot? (logical)
-  type = "contour",         # type of visualization
-  ...                       # additional arguments passed to contour/persp
+  param,                   
+  nquad = 21,               
+  npoints = 101,           
+  lim = c(-2.5, 2.5),      
+  normal = T,               
+  plot = T,                
+  type = "contour",        
+  ...                      
 )                     
 {
   # check validity of arguments

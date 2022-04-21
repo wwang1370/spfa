@@ -3,6 +3,7 @@
 \name{plotitem.cont}
 \alias{plotitem.cont}
 \alias{plotitem.disc}
+\alias{plotgroup}
 \title{Item level perspective plots or contour plots for spfa models}
 \usage{
 plotitem.cont(
@@ -28,6 +29,17 @@ plotitem.disc(
   plot = T,
   col = 1:ncat,
   lty = rep(1, ncat),
+  ...
+)
+
+plotgroup(
+  param,
+  nquad = 21,
+  npoints = 101,
+  lim = c(-2.5, 2.5),
+  normal = T,
+  plot = T,
+  type = "contour",
   ...
 )
 }
@@ -62,7 +74,7 @@ plotitem.disc(
 
 }
 \description{
-For continuous response data use \code{plotitem.cont} whereas discrete response data use \code{plotitem.disc}
+For continuous response data use \code{plotitem.cont} whereas discrete response data use \code{plotitem.disc}. For joint continuous and discrete data, use \code{plotgroup}.
 }
 \seealso{
 \code{\link{contour}} and \code{\link{persp}}
