@@ -1,13 +1,59 @@
-# fitting functions
-#
-# -Weimeng: Please write the help document; after that you can delete my
-# comments on the arguments 
 
+#' Semi-parametric Factor Analysis (spfa) Model 
+#' 
+#' 
+#' 
+#' \code{spfa} fits a unidimensional or two-dimension factor analysis model using penalized maximum likelihood estimation. A unidimensional spfa model can handle  
+#  discrete response data (i.e., item responses including binary responses and polytomous responses)
+#' or continuous response data (e.g., response time). A two-dimensional spfa model can only handle simple structure model with two latent factors loads to continuous and discrete response data, respectively.
+#' @param data a matrix that consists of item responses with missing data coded as \code{NA}.
+#' @param dimension a vector of integers containing indicators of the latent factor. The default is rep(0, ncol(data)) indicating all item loads on the same latent factor. 
+#' @param discrete a vector of \code{TRUE} or \code{FALSE} indicating whether the item is discrete with \code{TRUE} indicating the item is a discrete variable. The length of the vector should be the same as the number of columns of the input data. 
+#' @param control a list containing technical parameters for estimation. For example:
+#'   \itemize{
+#'     \item \code{shortpar} a list containing the starting values of spfa model parameters for each item.
+#'     \item  \code{pos} a list containing the positivity constraints
+#'      \item  \code{lmbd} a vector of penalty parameter (lambda). Default values a vector of 1s. 
+#'      \item \code{n_basis} number of basis. Default is 11. 
+#'      \item  \code{n_quad} number of quadrature points. Default is 21
+#'      \item  \code{maxit_em} the maximum number of iterations for the EM cycles. Default is 500.
+#'      \item \code{maxit_mstep} the maximum number of iterations for the mstep optimizer.
+#'       \item \code{maxit_start} 
+#'       \item \code{tol_em} tolerance for the EM convergence. Default is 1e-4.
+#'       \item \code{tol_mstep} tolerance for the mstep optimizer. Default is 1e-6.
+#'       \item \code{n_thrd} number of cores used for the penalized EM algorithm to run. Default is 1. 
+#'    
+#'   
+#'   }        
+#'
+#' @return
+#' @export
+#'
+#' @examples 
+#' # load simulated data 
+#' 
+#' 
+#' #RT <-spfa::simdata[,1:8]
+#' #R <-spfa::simdata[,9:16]
+#' 
+#' 
+#' # Fit a unidimensional spfa model with discrete data 
+#' 
+#' 
+#' \dontrun{spfa(data = R, dimension = rep(1, ncol(R)), discrete = rep(T, ncol(R)))}
+#' 
+#' 
+#' # Fit a unidimensional spfa model with continuous data
+#' 
+#' 
+#' \dontrun{spfa(data = RT, dimension = rep(0, ncol(RT)), discrete = rep(F, ncol(RT)))}
+#' 
+#' 
 spfa <- function(
-  data,                             # data set
-  dimension = rep( 0, ncol(data) ), # dimension indicators (integer)
-  discrete = rep(F, ncol(data) ),   # discrete indicator (logical)
-  control = list()                  # control list
+  data,                            
+  dimension = rep( 0, ncol(data) ), 
+  discrete = rep(F, ncol(data) ),  
+  control = list()               
 )
 {
   # check validity of arguments
