@@ -57,7 +57,7 @@ fscores <- function(
   
   # scoring
   ret <- list()
-  capture.output( ret$sco <- spfa_score2(
+  capture.output( sco <- spfa_score2(
     # arguments that users cannot set via control
     dat = data,
     na = -999,
@@ -72,8 +72,10 @@ fscores <- function(
     mode = as.numeric(normal)
   ) )
   cov.indx <- outer(1:d, 1:d, paste0)
-  colnames(ret$sco) <- c( paste0('x', 1:d), 
+  colnames(sco) <- c( paste0('x', 1:d), 
     paste0('v', cov.indx[lower.tri(cov.indx, diag = T)]) )
+  ret$eap <- sco[, 1:d, drop = F]      # EAP scores
+  ret$pcov <- sco[, -(1:d), drop = F]  # posterior covariance
 
   # reliability
   ret$rel <- numeric(d)
@@ -81,8 +83,8 @@ fscores <- function(
   {
     eap.indx <- paste0('x', k)
     pvar.indx <- paste0('v', k, k)
-    var.eap <- var(ret$sco[, eap.indx])
-    ex.pvar <- mean(ret$sco[, pvar.indx])
+    var.eap <- var(ret$eap[, eap.indx])
+    ex.pvar <- mean(ret$pcov[, pvar.indx])
     ret$rel[k] <- var.eap / (var.eap + ex.pvar)
   }
 
