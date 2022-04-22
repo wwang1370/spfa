@@ -89,13 +89,11 @@ spfa <- function(
 
   # default control configuration
   ctrl <- list(
-    item_type = disc,
     shortpar = NULL, 
     pos = NULL, 
     lmbd = rep( 1, ifelse(d == 1, m, m + 1) ), 
     n_basis = 11, 
     n_quad = 21, 
-    dim = dim,
     maxit_em = 500, 
     maxit_mstep = 20, 
     maxit_start = 20, 
@@ -128,18 +126,18 @@ spfa <- function(
 
   # estimation
   ret <- c(ret, spfa_main2(
-    # arguments that users cannot set
+    # arguments that users cannot set via control
     dat = data,
     na = -999,
     update_group = ifelse(d == 1, F, T),
-    # arguments that users can set
-    item_type = ctrl$item_type,
+    item_type = disc,
+    dim = dim,
+    # arguments that users can set via control
     shortpar = ctrl$shortpar,
     pos = ctrl$pos, 
     n_basis = ctrl$n_basis, 
     lmbd = ctrl$lmbd, 
     n_quad = ctrl$n_quad, 
-    dim = ctrl$dim,
     maxit_em = ctrl$maxit_em, 
     maxit_mstep = ctrl$maxit_mstep, 
     maxit_start = ctrl$maxit_start, 
@@ -148,17 +146,19 @@ spfa <- function(
     tol_start = ctrl$tol_start,
     n_thrd = ctrl$n_thrd) )
    
-  ## compute marginal log-likelihood
-  #ret$loglik <- marg_loglik2(
-  #  dat = data,
-  #  na = -999,
-  #  update_group = ifelse(d == 1, F, T),
-  #  item_type = ctrl$item_type,
-  #  shortpar = ret$shortpar,
-  #  dim = ctrl$dim,
-  #  n_basis = ctrl$n_basis,
-  #  n_quad = ctrl$n_quad,
-  #  n_thrd = ctrl$n_thrd)
+  # compute marginal log-likelihood
+  ret$loglik <- marg_loglik2(
+    # arguments that users cannot set via control
+    dat = data,
+    na = -999,
+    update_group = ifelse(d == 1, F, T),
+    item_type = disc,
+    dim = dim,
+    shortpar = ret$shortpar,
+    # arguments that users can set via control
+    n_basis = ctrl$n_basis,
+    n_quad = ctrl$n_quad,
+    n_thrd = ctrl$n_thrd)
 
   # return
   ret

@@ -13,10 +13,6 @@ spfa_score2 <- function(dat, na, item_type, shortpar, dim, update_group, n_basis
     .Call(`_spfa_spfa_score2`, dat, na, item_type, shortpar, dim, update_group, n_basis, n_quad, n_thrd, mode)
 }
 
-spfa_score1 <- function(dat, na, item_type, shortpar, n_basis, n_quad, n_thrd, mode) {
-    .Call(`_spfa_spfa_score1`, dat, na, item_type, shortpar, n_basis, n_quad, n_thrd, mode)
-}
-
 marg_loglik2 <- function(dat, na, item_type, shortpar, dim, update_group, n_basis, n_quad, n_thrd) {
     .Call(`_spfa_marg_loglik2`, dat, na, item_type, shortpar, dim, update_group, n_basis, n_quad, n_thrd)
 }
