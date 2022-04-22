@@ -5,7 +5,7 @@
 \alias{simdata}
 \title{Simulated dataset}
 \format{
-An object of class \code{data.frame} with 1000 rows and 16 columns.
+An object of class \code{matrix} (inherits from \code{array}) with 1000 rows and 16 columns.
 }
 \usage{
 simdata

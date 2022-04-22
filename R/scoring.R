@@ -1,5 +1,16 @@
-# computing EAP scores
-
+#' Computing EAP scores
+#'
+#' @param data data to be scored
+#' @param fit the function return from fitting a \code{spfa} model.
+#' @param dimension a vector of integers containing indicators of the latent factor. The default is rep(0, ncol(data)) indicating all item loads on the same latent factor. 
+#' @param discrete a vector of \code{TRUE} or \code{FALSE} indicating whether the item is discrete with \code{TRUE} indicating the item is a discrete variable. The length of the vector should be the same as the number of columns of the input data. 
+#' @param normal a logical value \code{T} or \code{F} indicating which density is used to rescale y.
+#' @param control a list of technical control variables. See \code{\link{spfa}}.
+#'
+#' @return
+#' @export
+#'
+#' @examples
 fscores <- function(
   data,  # data to be scored                            
   fit,   # function return from spfa 
