@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 04/18/2021 */
+ * Last modified: 04/21/2022 */
 
 #include "quad.h"
 
@@ -69,12 +69,12 @@ GaussLegendre::GaussLegendre(
 }
 
 /******************************************
- *       Derived Class Rect
+ *       Derived Class Const
  *******************************************/
 
 /* constructor */
 
-Rect::Rect(
+Const::Const(
   uword n_quad1_  // number of quadrature nodes per dimension (int)
   ) : Quad(n_quad1_)
 {

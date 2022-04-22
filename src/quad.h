@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 04/16/2021 */
+ * Last modified: 04/21/2022 */
 
 #ifndef QUAD_H
 #define QUAD_H
@@ -44,17 +44,17 @@ class GaussLegendre : public Quad
     virtual ~GaussLegendre() {};
 };
 
-// rectangular quadrature (unnormalized)
-class Rect : public Quad
+// constant quadrature (unnormalized)
+class Const : public Quad
 {
   public:
     // method
-    Rect *clone() const {return new Rect(*this);}  // deep copy
+    Const *clone() const {return new Const(*this);}  // deep copy
     
     // constructor and destructor
-    Rect() {};  // default
-    Rect(uword n_quad1_);
-    virtual ~Rect() {};
+    Const() {};  // default
+    Const(uword n_quad1_);
+    virtual ~Const() {};
 };
 
 #endif

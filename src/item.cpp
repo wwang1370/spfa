@@ -2,7 +2,7 @@
  *
  * Author: Yang Liu
  *
- * Last modified: 03/08/2022 */
+ * Last modified: 04/21/2022 */
 
 #include "item.h"
 
@@ -45,7 +45,7 @@ Item::Item(
       }
       uword n_cat = ( (uword) m ) + 1;  // # of categories
       basis_y = new Iden(n_cat);  // identity basis
-      quad_y = new Rect(n_cat);  // (unnormalized) rectangular quadrature
+      quad_y = new Const(n_cat);  // (unnormalized) constant quadrature
       trans_y = zeros(n_cat, n_cat - 1); // transformation matrix
       trans_y.diag(-1).ones();
       pen_y = zeros(n_cat - 1, n_cat - 1);  // penalty matrix
