@@ -3,18 +3,9 @@
 \docType{data}
 \name{simdata}
 \alias{simdata}
-\title{Simulated dataset}
-\format{
-An object of class \code{matrix} (inherits from \code{array}) with 1000 rows and 16 columns.
-}
-\usage{
-simdata
-}
+\title{simdata}
 \description{
 There are 16 columns with 1000 rows. The first 8 columns contain continuous item response time data and the last 8 columns with discrete item responses. 
 Among the discrete items, there are 4 dichotomous and 4 four-category ones.
 }
-\details{
-head(simdata)
-}
-\keyword{datasets}
+\keyword{data}

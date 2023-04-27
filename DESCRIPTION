@@ -1,14 +1,20 @@
 Package: spfa
 Type: Package
-Title: What the package does (short line)
+Title: Fitting semiparametric factor analyses model that incorporates item responses and response time
 Version: 1.0
 Date: 2022-04-19
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Authors@R: c(
+    person("Yang", family = "Liu", email = "yliu87@umd.edu", role = c("cre","aut")),
+    person("Weimeng", family = "Wang", email = "weimengbonnie@gmail.com", role = c("aut","ctb")))
+Maintainer: Yang Liu <yliu87@umd.edu>
 Description: More about what it does (maybe more than one line)
-License: What license is it under?
-Imports: Rcpp (>= 1.0.6)
+License: MIT + file LICENSE
+Imports: 
+    graphics,
+    Rcpp
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
+LazyData: true
+Encoding: UTF-8
 Depends: 
     R (>= 2.10)

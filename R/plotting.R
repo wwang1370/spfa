@@ -13,10 +13,15 @@
 #' @param type the type of plot to be visualized. The default is the contour plot \code{\link{contour}}. It can also be changed to "\code{persp}" indicating perspective plots.
 #' @param ... additional arguments passed to \code{\link{contour}} and \code{\link{persp}}
 #' @seealso \code{\link{contour}} and \code{\link{persp}}
-#' @return
+#' @return plots. Item level perspective and contour plot
 #' @export
-#'
 #' @examples
+#' 
+#' # Contour plot of the first item 
+#' 
+#' plotitem.cont(spfa:::spfa_example$par[[1]])
+
+
 plotitem.cont <- function(
   param,                    
   nquad = 21,               
@@ -163,6 +168,7 @@ plotitem.disc <- function(
     lines(ret$x, ret$prob[, k], col = col[k], lty = lty[k], ...)
 }
 #' # Item level plot for continuous and discrete response data
+#' @param lim limit
 #' @rdname plotitem.cont
 
 plotgroup <- function(

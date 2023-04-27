@@ -69,12 +69,20 @@ plotgroup(
 \item{col}{color of the line.}
 
 \item{lty}{line type}
+
+\item{lim}{limit}
 }
 \value{
-
+plots. Item level perspective and contour plot
 }
 \description{
 For continuous response data use \code{plotitem.cont} whereas discrete response data use \code{plotitem.disc}. For joint continuous and discrete data, use \code{plotgroup}.
+}
+\examples{
+
+# Contour plot of the first item 
+
+plotitem.cont(spfa:::spfa_example$par[[1]])
 }
 \seealso{
 \code{\link{contour}} and \code{\link{persp}}

@@ -7,10 +7,12 @@
 #' @param normal a logical value \code{T} or \code{F} indicating which density is used to rescale y.
 #' @param control a list of technical control variables. See \code{\link{spfa}}.
 #'
-#' @return
-#' @export
-#'
+#' @return EAP scores for the fitted spfa model and reliability
+#' @export 
 #' @examples
+#' RT <- spfa::simdata[,1:8]
+#' myeaps <- fscores(data = RT, fit = spfa:::spfa_example, 
+#' dimension = rep( 0, ncol(RT)), discrete = rep(FALSE, ncol(RT) ))
 fscores <- function(
   data,  # data to be scored                            
   fit,   # function return from spfa 
