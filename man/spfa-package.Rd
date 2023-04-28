@@ -4,9 +4,9 @@
 \name{spfa-package}
 \alias{spfa}
 \alias{spfa-package}
-\title{spfa: Fitting semiparametric factor analyses model that incorporates item responses and response time}
+\title{spfa: spfa: Semiparametric factor analysis}
 \description{
-More about what it does (maybe more than one line)
+The package provides estimation, scoring, and plotting functions for the semiparametric parametric factor model proposed by Liu & Wang (2022; 2023). Both the conditional densities of observed responses given the latent factors and the joint density of latent factors are estimated nonparametrically. Functional parameters are approximated by smoothing splines, whose coefficients are estimated by penalized maximum likehood using an expectation-maximization (EM) algorithm. E- and M-steps can be parallelized on multi-thread computing platforms that support OpenMP. Both continuous and unordered categorical response variables are supported.
 }
 \author{
 \strong{Maintainer}: Yang Liu \email{yliu87@umd.edu}

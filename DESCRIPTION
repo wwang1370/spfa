@@ -1,13 +1,13 @@
 Package: spfa
 Type: Package
-Title: Fitting semiparametric factor analyses model that incorporates item responses and response time
+Title: spfa: Semiparametric factor analysis
 Version: 1.0
 Date: 2022-04-19
 Authors@R: c(
     person("Yang", family = "Liu", email = "yliu87@umd.edu", role = c("cre","aut")),
     person("Weimeng", family = "Wang", email = "weimengbonnie@gmail.com", role = c("aut","ctb")))
 Maintainer: Yang Liu <yliu87@umd.edu>
-Description: More about what it does (maybe more than one line)
+Description:The package provides estimation, scoring, and plotting functions for the semiparametric parametric factor model proposed by Liu & Wang (2022; 2023). Both the conditional densities of observed responses given the latent factors and the joint density of latent factors are estimated nonparametrically. Functional parameters are approximated by smoothing splines, whose coefficients are estimated by penalized maximum likehood using an expectation-maximization (EM) algorithm. E- and M-steps can be parallelized on multi-thread computing platforms that support OpenMP. Both continuous and unordered categorical response variables are supported.
 License: MIT + file LICENSE
 Imports: 
     graphics,
