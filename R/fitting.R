@@ -27,6 +27,7 @@
 #' @return a list including spfa model parameter estimates and marginal log-likelihood.
 #' @references
 #' Liu, Y., & Wang, W. (2022). Semiparametric Factor Analysis for Item-Level Response Time Data. \emph{Psychometrika, 87}(2), 666–692. \url{ https://doi.org/10.1007/s11336-021-09832-8}
+#' Liu, Y., & Wang, W. (2023). What Can We Learn from a Semiparametric Factor Analysis of Item Responses and Response Time? An Illustration with the PISA 2015 Data. Retrieved from \url{http://arxiv.org/abs/2303.10079}
 #' @export spfa
 #' 
 #' @examples
