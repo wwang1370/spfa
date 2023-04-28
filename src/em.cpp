@@ -18,7 +18,7 @@ void Item::search_dir0()
     dir = - solve(hess, grad, solve_opts::fast + solve_opts::likely_sympd);
   else
   {
-    cout << "WARNING: Ill-conditioned Hessian; condition # = " << kappa << endl;
+    Rcout << "WARNING: Ill-conditioned Hessian; condition # = " << kappa << endl;
     dir = - grad;
   }
   cond1 = arma::norm(grad);
