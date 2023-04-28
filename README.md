@@ -45,7 +45,7 @@ library(spfa)
 ## Citation:
 
 Liu, Y., & Wang, W. (2022). Semiparametric factor analysis for
-item-level response time data. Psychometrika, (2), 666-692.
+item-level response time data. *Psychometrika*, *87* (2), 666-692.
 
 Liu, Y., & Wang, W. (2023). What Can We Learn from a Semiparametric
 Factor Analysis of Item Responses and Response Time? An Illustration
