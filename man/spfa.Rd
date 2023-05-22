@@ -7,7 +7,7 @@
 spfa(
   data,
   dimension = rep(0, ncol(data)),
-  discrete = rep(F, ncol(data)),
+  discrete = rep(FALSE, ncol(data)),
   control = list()
 )
 }
@@ -51,13 +51,14 @@ with two latent factors load to continuous and discrete response data, respectiv
  # Fit a unidimensional spfa model with continuous data (Response time)
 
 
-\dontrun{
+ \donttest{
 spfa_example <- spfa(data = RT, 
        dimension = rep(0, ncol(RT)), 
-       discrete = rep(F, ncol(RT)))
+       discrete = rep(FALSE, ncol(RT)))
        }
  
- # In the spfa pacakge, the output of spfa_example can be directly extracted. See eample code below:
+ # In the spfa pacakge, the output of spfa_example can be directly extracted. 
+ # See example code below:
  
  spfa:::spfa_example$shortpar
  

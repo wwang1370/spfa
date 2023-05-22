@@ -19,7 +19,7 @@
 #' 
 #' # Contour plot of the first item 
 #' 
-#' plotitem.cont(spfa::spfa_example$par[[1]])
+#' plotitem.cont(spfa:::spfa_example$par[[1]])
 
 
 plotitem.cont <- function(
@@ -116,7 +116,7 @@ plotitem.disc <- function(
   ncat,                     # number of categories (integer)
   npoints = 101,            # number of x levels (integer)
   xlim = c(-2.5, 2.5),      # limit of x (numeric, length = 2)
-  normal = T,               # normal scale? (logical)
+  normal = TRUE,               # normal scale? (logical)
   FUN = NULL,               # function to integrate ( function(y) )
   plot = TRUE,                 # create plot? (logical)
   col = 1:ncat,             # default color

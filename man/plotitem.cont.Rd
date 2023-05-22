@@ -24,7 +24,7 @@ plotitem.disc(
   ncat,
   npoints = 101,
   xlim = c(-2.5, 2.5),
-  normal = T,
+  normal = TRUE,
   FUN = NULL,
   plot = TRUE,
   col = 1:ncat,
@@ -82,7 +82,7 @@ For continuous response data use \code{plotitem.cont} whereas discrete response 
 
 # Contour plot of the first item 
 
-plotitem.cont(spfa::spfa_example$par[[1]])
+plotitem.cont(spfa:::spfa_example$par[[1]])
 }
 \seealso{
 \code{\link{contour}} and \code{\link{persp}}

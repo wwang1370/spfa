@@ -6,16 +6,17 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The package provides estimation, scoring, and plotting functions for the
-semiparametric parametric factor model proposed by Liu & Wang (2022;
-2023). Both the conditional densities of observed responses given the
-latent factors and the joint density of latent factors are estimated
-nonparametrically. Functional parameters are approximated by smoothing
-splines, whose coefficients are estimated by penalized maximum likehood
-using an expectation-maximization (EM) algorithm. E- and M-steps can be
-parallelized on multi-thread computing platforms that support OpenMP.
-Both continuous and unordered categorical response variables are
-supported.
+Estimation, scoring, and plotting functions for the semi-parametric
+factor model proposed by Liu & Wang (2022)
+<doi:10.1007/s11336-021-09832-8> and Liu & Wang (2023)
+\<arXiv:2303.10079\>. Both the conditional densities of observed
+responses given the latent factors and the joint density of latent
+factors are estimated non-parametrically. Functional parameters are
+approximated by smoothing splines, whose coefficients are estimated by
+penalized maximum likelihood using an expectation-maximization (EM)
+algorithm. E- and M-steps can be parallelized on multi-thread computing
+platforms that support OpenMP. Both continuous and unordered categorical
+response variables are supported.
 
 ## Installation
 
@@ -29,9 +30,9 @@ devtools::install_github("wwang1370/spfa")
 
 ## Example
 
-Various examples and worked help files have been compiled using the
-knitr package to generate HTML output, and are available on the package
-help file. User contributions are welcome!
+Various examples and help files have been compiled using the knitr
+package to generate HTML output, and are available on the package help
+file. User contributions are welcome!
 
 ``` r
 library(spfa)
@@ -50,4 +51,4 @@ item-level response time data. *Psychometrika*, *87* (2), 666-692.
 Liu, Y., & Wang, W. (2023). What Can We Learn from a Semiparametric
 Factor Analysis of Item Responses and Response Time? An Illustration
 with the PISA 2015 Data. Retrieved from
-<https://arxiv.org/abs/2303.10079>
+<http://arxiv.org/abs/2303.10079>
