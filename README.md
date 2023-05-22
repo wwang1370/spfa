@@ -50,4 +50,4 @@ item-level response time data. *Psychometrika*, *87* (2), 666-692.
 Liu, Y., & Wang, W. (2023). What Can We Learn from a Semiparametric
 Factor Analysis of Item Responses and Response Time? An Illustration
 with the PISA 2015 Data. Retrieved from
-<http://arxiv.org/abs/2303.10079>
+<https://arxiv.org/abs/2303.10079>

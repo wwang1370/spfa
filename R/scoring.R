@@ -4,21 +4,21 @@
 #' @param fit the function return from fitting a \code{spfa} model.
 #' @param dimension a vector of integers containing indicators of the latent factor. The default is rep(0, ncol(data)) indicating all item loads on the same latent factor. 
 #' @param discrete a vector of \code{TRUE} or \code{FALSE} indicating whether the item is discrete with \code{TRUE} indicating the item is a discrete variable. The length of the vector should be the same as the number of columns of the input data. 
-#' @param normal a logical value \code{T} or \code{F} indicating which density is used to rescale y.
+#' @param normal a logical value \code{TRUE} or \code{FALSE} indicating which density is used to rescale y.
 #' @param control a list of technical control variables. See \code{\link{spfa}}.
 #'
 #' @return EAP scores for the fitted spfa model and reliability
 #' @export 
 #' @examples
 #' RT <- spfa::simdata[,1:8]
-#' myeaps <- fscores(data = RT, fit = spfa:::spfa_example, 
+#' myeaps <- fscores(data = RT, fit = spfa::spfa_example, 
 #' dimension = rep( 0, ncol(RT)), discrete = rep(FALSE, ncol(RT) ))
 fscores <- function(
   data,  # data to be scored                            
   fit,   # function return from spfa 
   dimension = rep( 0, ncol(data) ),  # dimension indicator
-  discrete = rep(F, ncol(data) ),    # discrete indicator
-  normal = T,   # normal scale?
+  discrete = rep(FALSE, ncol(data) ),    # discrete indicator
+  normal = TRUE,   # normal scale?
   control = list()               
 )
 {
@@ -75,7 +75,7 @@ fscores <- function(
     dat = data,
     na = -999,
     dim = dim,
-    update_group = ifelse(d == 1, F, T),
+    update_group = ifelse(d == 1, FALSE, TRUE),
     item_type = disc,
     # arguments that users can set via control
     shortpar = fit$shortpar,
@@ -86,9 +86,9 @@ fscores <- function(
   ) )
   cov.indx <- outer(1:d, 1:d, paste0)
   colnames(sco) <- c( paste0('x', 1:d), 
-    paste0('v', cov.indx[lower.tri(cov.indx, diag = T)]) )
-  ret$eap <- sco[, 1:d, drop = F]      # EAP scores
-  ret$pcov <- sco[, -(1:d), drop = F]  # posterior covariance
+    paste0('v', cov.indx[lower.tri(cov.indx, diag = TRUE)]) )
+  ret$eap <- sco[, 1:d, drop = FALSE]      # EAP scores
+  ret$pcov <- sco[, -(1:d), drop = FALSE]  # posterior covariance
 
   # reliability
   ret$rel <- numeric(d)

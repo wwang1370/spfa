@@ -12,9 +12,9 @@ plotitem.cont(
   npoints = 101,
   xlim = c(-2.5, 2.5),
   ylim = c(0, 1),
-  normal = T,
+  normal = TRUE,
   FUN = NULL,
-  plot = T,
+  plot = TRUE,
   type = "contour",
   ...
 )
@@ -26,7 +26,7 @@ plotitem.disc(
   xlim = c(-2.5, 2.5),
   normal = T,
   FUN = NULL,
-  plot = T,
+  plot = TRUE,
   col = 1:ncat,
   lty = rep(1, ncat),
   ...
@@ -37,8 +37,8 @@ plotgroup(
   nquad = 21,
   npoints = 101,
   lim = c(-2.5, 2.5),
-  normal = T,
-  plot = T,
+  normal = TRUE,
+  plot = TRUE,
   type = "contour",
   ...
 )
@@ -54,11 +54,11 @@ plotgroup(
 
 \item{ylim}{the y limits of the plot. Two numerical values indicating the lower and upper limits of the density. Note y is rescaled to a uniform [0,1] distribution.}
 
-\item{normal}{a logical value \code{T} or \code{F} indicating which density is used to rescale y.}
+\item{normal}{a logical value \code{TRUE} or \code{FALSE} indicating which density is used to rescale y.}
 
 \item{FUN}{a user supplied function to rescale.}
 
-\item{plot}{a logical value \code{T} or \code{F} indicating whether the plot is visualized.}
+\item{plot}{a logical value \code{TRUE} or \code{FALSE} indicating whether the plot is visualized.}
 
 \item{type}{the type of plot to be visualized. The default is the contour plot \code{\link{contour}}. It can also be changed to "\code{persp}" indicating perspective plots.}
 
@@ -82,7 +82,7 @@ For continuous response data use \code{plotitem.cont} whereas discrete response 
 
 # Contour plot of the first item 
 
-plotitem.cont(spfa:::spfa_example$par[[1]])
+plotitem.cont(spfa::spfa_example$par[[1]])
 }
 \seealso{
 \code{\link{contour}} and \code{\link{persp}}

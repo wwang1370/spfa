@@ -1,8 +1,15 @@
-#' @keywords internal
+#' @name spfa-package
+#' @title Semiparametric Factor Analysis
+#' @docType package
+#' @description
+#' The package provides estimation, scoring, and plotting functions for the semiparametric parametric factor model proposed by Liu & Wang (2022; 2023). Both the conditional densities of observed responses given the latent factors and the joint density of latent factors are estimated nonparametrically. Functional parameters are approximated by smoothing splines, whose coefficients are estimated by penalized maximum likelihood using an expectation-maximization (EM) algorithm. E- and M-steps can be parallelized on multi-thread computing platforms that support OpenMP. Both continuous and unordered categorical response variables are supported.
+#' 
 #' @useDynLib spfa, .registration=TRUE
-"_PACKAGE"
-
 ## usethis namespace: start
 #' @importFrom Rcpp evalCpp
+#' @importFrom graphics contour lines persp
+#' @importFrom stats dnorm pnorm var
+#' @importFrom utils capture.output
 ## usethis namespace: end
+#' @keywords package
 NULL

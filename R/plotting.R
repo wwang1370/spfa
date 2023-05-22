@@ -7,9 +7,9 @@
 #' @param npoints an integer value of number of x and y levels in the plot
 #' @param xlim the x limits of the plot. Two numerical values indicating the lower and upper limits
 #' @param ylim the y limits of the plot. Two numerical values indicating the lower and upper limits of the density. Note y is rescaled to a uniform [0,1] distribution.
-#' @param normal a logical value \code{T} or \code{F} indicating which density is used to rescale y.
+#' @param normal a logical value \code{TRUE} or \code{FALSE} indicating which density is used to rescale y.
 #' @param FUN a user supplied function to rescale.
-#' @param plot a logical value \code{T} or \code{F} indicating whether the plot is visualized. 
+#' @param plot a logical value \code{TRUE} or \code{FALSE} indicating whether the plot is visualized. 
 #' @param type the type of plot to be visualized. The default is the contour plot \code{\link{contour}}. It can also be changed to "\code{persp}" indicating perspective plots.
 #' @param ... additional arguments passed to \code{\link{contour}} and \code{\link{persp}}
 #' @seealso \code{\link{contour}} and \code{\link{persp}}
@@ -19,7 +19,7 @@
 #' 
 #' # Contour plot of the first item 
 #' 
-#' plotitem.cont(spfa:::spfa_example$par[[1]])
+#' plotitem.cont(spfa::spfa_example$par[[1]])
 
 
 plotitem.cont <- function(
@@ -28,9 +28,9 @@ plotitem.cont <- function(
   npoints = 101,            
   xlim = c(-2.5, 2.5),      
   ylim = c(0, 1),           
-  normal = T,               
+  normal = TRUE,               
   FUN = NULL,              
-  plot = T,                
+  plot = TRUE,                
   type = "contour",         
   ...                      
 )                     
@@ -82,7 +82,7 @@ plotitem.cont <- function(
   # if user supplies function to integrate
   if ( !is.null(FUN) )
   {
-    plot <- F  # automatically turn off plotting
+    plot <- FALSE  # automatically turn off plotting
     fy <- sapply(quad$x, FUN)
     # recalculate dns at quad$x
     dns <- t( exp( sweep(hq, 2, log( colSums(exp(hq) * quad$w) ), `-`) ) )
@@ -118,7 +118,7 @@ plotitem.disc <- function(
   xlim = c(-2.5, 2.5),      # limit of x (numeric, length = 2)
   normal = T,               # normal scale? (logical)
   FUN = NULL,               # function to integrate ( function(y) )
-  plot = T,                 # create plot? (logical)
+  plot = TRUE,                 # create plot? (logical)
   col = 1:ncat,             # default color
   lty = rep(1, ncat),       # default line type
   ...                       # additional arguments passed to plot
@@ -154,7 +154,7 @@ plotitem.disc <- function(
   colnames(ret$prob) <- paste0("cat", 1:ncat - 1)
   if ( !is.null(FUN) )  # if user supplies function to integrate
   {
-    plot <- F  # automatically turn off plotting
+    plot <- FALSE  # automatically turn off plotting
     fy <- sapply(1:ncat - 1, FUN)
     # e.g., if supply function(y) y, then it computes expected score curve
     ret$f <- rowSums( sweep(ret$prob, 2, fy, `*`) )
@@ -176,8 +176,8 @@ plotgroup <- function(
   nquad = 21,               
   npoints = 101,           
   lim = c(-2.5, 2.5),      
-  normal = T,               
-  plot = T,                
+  normal = TRUE,               
+  plot = TRUE,                
   type = "contour",        
   ...                      
 )                     

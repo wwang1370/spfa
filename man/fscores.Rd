@@ -8,8 +8,8 @@ fscores(
   data,
   fit,
   dimension = rep(0, ncol(data)),
-  discrete = rep(F, ncol(data)),
-  normal = T,
+  discrete = rep(FALSE, ncol(data)),
+  normal = TRUE,
   control = list()
 )
 }
@@ -22,7 +22,7 @@ fscores(
 
 \item{discrete}{a vector of \code{TRUE} or \code{FALSE} indicating whether the item is discrete with \code{TRUE} indicating the item is a discrete variable. The length of the vector should be the same as the number of columns of the input data.}
 
-\item{normal}{a logical value \code{T} or \code{F} indicating which density is used to rescale y.}
+\item{normal}{a logical value \code{TRUE} or \code{FALSE} indicating which density is used to rescale y.}
 
 \item{control}{a list of technical control variables. See \code{\link{spfa}}.}
 }
@@ -34,6 +34,6 @@ Computing EAP scores
 }
 \examples{
 RT <- spfa::simdata[,1:8]
-myeaps <- fscores(data = RT, fit = spfa:::spfa_example, 
+myeaps <- fscores(data = RT, fit = spfa::spfa_example, 
 dimension = rep( 0, ncol(RT)), discrete = rep(FALSE, ncol(RT) ))
 }
