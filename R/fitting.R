@@ -47,11 +47,11 @@
 #'  # In the spfa pacakge, the output of spfa_example can be directly extracted. 
 #'  # See example code below:
 #'  
-#'  spfa:::spfa_example$shortpar
+#'  spfa::spfa_example$shortpar
 #'  
 #'  # Visualize the result for item 1 as an example 
 #'  
-#'  plotitem.cont(spfa:::spfa_example$par[[1]])
+#'  plotitem.cont(spfa::spfa_example$par[[1]])
 
 spfa <- function(
         data,                            

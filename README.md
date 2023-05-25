@@ -15,8 +15,8 @@ factors are estimated non-parametrically. Functional parameters are
 approximated by smoothing splines, whose coefficients are estimated by
 penalized maximum likelihood using an expectation-maximization (EM)
 algorithm. E- and M-steps can be parallelized on multi-thread computing
-platforms that support OpenMP. Both continuous and unordered categorical
-response variables are supported.
+platforms that support ‘OpenMP’. Both continuous and unordered
+categorical response variables are supported.
 
 ## Installation
 

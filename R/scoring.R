@@ -11,7 +11,7 @@
 #' @export 
 #' @examples
 #' RT <- spfa::simdata[,1:8]
-#' myeaps <- fscores(data = RT, fit = spfa:::spfa_example, 
+#' myeaps <- fscores(data = RT, fit = spfa::spfa_example, 
 #' dimension = rep( 0, ncol(RT)), discrete = rep(FALSE, ncol(RT) ))
 fscores <- function(
   data,  # data to be scored                            

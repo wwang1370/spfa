@@ -82,7 +82,7 @@ For continuous response data use \code{plotitem.cont} whereas discrete response 
 
 # Contour plot of the first item 
 
-plotitem.cont(spfa:::spfa_example$par[[1]])
+plotitem.cont(spfa::spfa_example$par[[1]])
 }
 \seealso{
 \code{\link{contour}} and \code{\link{persp}}

@@ -19,7 +19,7 @@
 #' 
 #' # Contour plot of the first item 
 #' 
-#' plotitem.cont(spfa:::spfa_example$par[[1]])
+#' plotitem.cont(spfa::spfa_example$par[[1]])
 
 
 plotitem.cont <- function(
